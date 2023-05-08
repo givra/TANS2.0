@@ -12,7 +12,7 @@ class TracciaMC : public TRandom3 {
 	public:
 	
 	//TracciaMC();	//costruttore di default
-	TracciaMC(float theta, float phi, vector<float> orig);
+	TracciaMC(float theta, float phi, float Xo, float Yo, float Zo);
 		
 	void SetDistribEta();			// distribuzione da vedere, per ora è gaussiana
 	void SetDistribPhi();			// uniforme

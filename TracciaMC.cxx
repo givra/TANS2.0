@@ -25,7 +25,7 @@ fH(27.)
 }
 */
 
-TracciaMC::TracciaMC(float theta, float phi, vector<float> orig):TRandom3(),
+TracciaMC::TracciaMC(float theta, float phi, float Xo, float Yo, float Zo):TRandom3(),
 fEta(0.),
 fPhi(phi),
 fTheta(theta),
@@ -33,9 +33,9 @@ fT(0.),
 fH(27.)
 { 
    origine = new float[3];
-   origine[0] = orig[0];	
-   origine[1] = orig[1];
-   origine[2] = orig[2];
+   origine[0] = Xo;	
+   origine[1] = Yo;
+   origine[2] = Zo;
    
    fC = new float[3];
 }
@@ -59,8 +59,8 @@ void TracciaMC::Theta(){
 
 void TracciaMC::CalcCoeff(){
 	fC[0] = TMath::Sin(fTheta)*TMath::Cos(fPhi);		// c1
-	fC[1] = TMath::Sin(fTheta)*TMath::Sin(fPhi);        // c2
-	fC[2] = TMath::Cos(fTheta);							// c3
+	fC[1] = TMath::Sin(fTheta)*TMath::Sin(fPhi);		        // c2
+	fC[2] = TMath::Cos(fTheta);				// c3
 }
 
 void TracciaMC::SetCoeff(vector<float> C){
@@ -93,7 +93,7 @@ vector<float> TracciaMC::intersezione(int layer){
 	     R=3;
 	     break;
 	     
-         case 2:
+             case 2:
 	     R=4;
 	     break;
 	     
@@ -101,8 +101,8 @@ vector<float> TracciaMC::intersezione(int layer){
 	     R=7;
 	     break;
 	     
-         default:
-	     cout<< "Ci sono solo 3 layer, inserisci un numero compreso tra 1 e 3" <<endl;
+             default:
+	     cout<<"Ci sono solo 3 layer, inserisci un numero compreso tra 1 e 3"<<endl;
 	     break;
 		}
    
