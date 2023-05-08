@@ -10,18 +10,25 @@ Vertex::Vertex():TRandom3(){
 //unità di misura in cm!
 
 
+X = 0.;
+Y = 0.;
+Z = 0.;
+
+moltep = 1;
+
+ }
+ 
+ 
+void Vertex::NewVertex(){
+
 X = gRandom->Gaus(0,0.01); //coordinata x
 Y = gRandom->Gaus(0,0.01); //coordinata y
 Z = gRandom->Gaus(0,5.3); //coordinata z
 
 moltep = 1 + (gRandom->Rndm()*80)/1;
-
- }
- 
-void Vertex::SetMoltUniform(){
-
-moltep = 1 + (gRandom->Rndm()*80)/1;
 }
+ 
+
 
 void Vertex::SetZUniform(){
 
@@ -41,6 +48,10 @@ return cordinate;}
 
 int Vertex::GetMolteplicity(){return moltep;}
 
+float Vertex::GetX(){return X;}
 
+float Vertex::GetY(){return Y;}
+
+float Vertex::GetZ(){return Z;}
 
 
