@@ -32,7 +32,7 @@ void SimulazioneTree(){
 	TFile hfile("htree.root","RECREATE");	  
         TTree *tree = new TTree("T","TTree con 2 branches");
         
-        int numeroeventi = 10000;
+        int numeroeventi = 1000;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto",numeroeventi);
         TClonesArray &hits1 = *ptrhits1;
@@ -120,14 +120,14 @@ void SimulazioneTree(){
 			 
 		 }while( i < point.mult);
                
-                 // Debug
-   // printf("Evento %d - moltepl: %d\n",evento,point.mult);
-  //  printf("x= %f ; y= %f; z= %f \n",point.X,point.Y,point.Z);
-    /*printf("Entries nel TClonesArray: %d\n",ptrhits->GetEntries());
-    for (int j=0; j<hits.GetEntries(); j++){
-      Punto *tst=(Punto*)ptrhits->At(j);
-      cout<<"Punto "<<j<<") x, y, z = "<<tst->GetX()<<"; "<<tst->GetY()<<"; "<<tst->GetZ()<<endl;
-    }*/
+               /*  // Debug
+    printf("Evento %d - moltepl: %d\n",evento,point.mult);
+    printf("x= %f ; y= %f; z= %f \n",point.X,point.Y,point.Z);
+    printf("Entries nel TClonesArray: %d\n",ptrhits1->GetEntries());
+    for (int j=0; j<hits1.GetEntries(); j++){
+      Punto *tst=(Punto*)ptrhits1->At(j);
+      cout<<"int primo layer "<<j<<") x, y, z = "<<tst->GetX()<<"; "<<tst->GetY()<<"; "<<tst->GetZ()<<endl;}*/
+    
     // fine del debug
 		 
 		 tree->Fill();
@@ -143,7 +143,7 @@ void SimulazioneTree(){
 
                 // Close the file. 
                 hfile.Close();
-                
+                 
                   double TT = time.CpuTime();	
   cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
 	
