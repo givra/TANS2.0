@@ -55,9 +55,9 @@ void Simulazione(){
                    static VTX point;
 		 
 		   tree->Branch("VertMult",&point.X,"X/F:Y:Z:mult/I");
-                   tree->Branch("HitsPrimo",&ptrhits1);
-                   tree->Branch("HitsSecondo",&ptrhits2);
-                   tree->Branch("HitsTerzo",&ptrhits3);
+                   tree->Branch("HitsPrimo",&ptrhits1,"HitsPrimo/F");
+                   tree->Branch("HitsSecondo",&ptrhits2,"HitsSecondo/F");
+                   tree->Branch("HitsTerzo",&ptrhits3,"HitsTerzo/F");
                    
                    vector<float> coordinate, intersez;
                    Vertex vertice0;

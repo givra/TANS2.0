@@ -15,9 +15,9 @@ public:
   
   Multis();
   
-  void NuoviAngoli(bool m);
+ 
   void VarioAngolo(TracciaMC track); //vado a modificare fC di track
-  
+  void NuoviAngoli(bool m);
     
 private: 
   

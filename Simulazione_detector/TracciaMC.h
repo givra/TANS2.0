@@ -19,9 +19,9 @@ class TracciaMC : public TRandom3 {
 	void Theta();		       // funzie che da Eta (Pseudorapidità) calcola Theta
 	
 	void CalcCoeff();	// calcola c1,c2,c3 a partire dagli angoli
-	void SetCoeff(vector<float> C);
+	void SetCoeff(vector<float>	C);	 
 	
-	void SetOrigine(vector<float> O);
+	void SetOrigine(vector<float> O);	
 	vector<float> GetO();
 	
 	float GetPhi();

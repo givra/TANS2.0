@@ -22,7 +22,7 @@ void Ricostruzione2(){
 	
 	int numeroeventi;
 	TStopwatch time;
-	TH1D* hist = new TH1D ("h1","zreconstructed" , 80, -14., 14.);
+	TH1D* hist2 = new TH1D ("h2","zreconstructed versione2" , 80, -14., 14.);
 	
 
 	//ifstream fin("intersez_simulate.txt");
@@ -57,15 +57,15 @@ void Ricostruzione2(){
     int mult;} VTX;
   static VTX point;
   //Apertura file di input
-  TFile hfile("htree.root");
+  TFile hfile2("htree2.root");
   //Lettura TTree  e branch
-  TTree *tree = (TTree*)hfile.Get("T");
-  TBranch *b1=tree->GetBranch("VertMult");
-  TBranch *b2=tree->GetBranch("HitsPrimo");
-  TBranch *b3=tree->GetBranch("HitsSecondo");
-  TBranch *b4=tree->GetBranch("HitsTerzo");
+  TTree *tree2 = (TTree*)hfile2.Get("T2");
+  TBranch *b1=tree2->GetBranch("VertMult");
+  TBranch *b2=tree2->GetBranch("HitsPrimo");
+  TBranch *b3=tree2->GetBranch("HitsSecondo");
+  TBranch *b4=tree2->GetBranch("HitsTerzo");
 
-  numeroeventi = tree->GetEntries();
+  numeroeventi = tree2->GetEntries();
 
   // Dichiarazione TClonesArray
   TClonesArray *hits1 = new TClonesArray("Punto2",numeroeventi);
@@ -94,12 +94,12 @@ void Ricostruzione2(){
     tree->Branch("GoodHitsTerzo",&ptrhitsgood3);*/
   
   // loop sugli ingressi nel TTree
-  for(int ev=0;ev<tree->GetEntries();ev++){
+  for(int ev=0;ev<tree2->GetEntries();ev++){
   
        ofstream fout1("dati_tracklets.txt");
 	ifstream fin2("dati_tracklets.txt");
   
-    tree->GetEvent(ev);
+    tree2->GetEvent(ev);
    // cout<<"Evento "<<ev<<"; Molteplicita= "<<point.mult<<endl;
    // cout<<"X,Y,Z = "<<point.X<<"; "<<point.Y<<"; "<<point.Z<<endl;
     

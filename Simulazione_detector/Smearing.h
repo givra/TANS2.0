@@ -14,12 +14,10 @@ public:
 	Smearing();
 	void smearZ(float Ztrue);
 	void smearPhi(float Xtrue, float Ytrue);
-	
 	float GetXrec();
 	float GetYrec();
 	float GetZrec();
 	float GetPhirec();
-	
 	
 private:
 

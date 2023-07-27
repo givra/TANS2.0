@@ -3,6 +3,7 @@
 #include "TObject.h" 
 #include "TRandom3.h"
 #include "TMath.h"
+#include <fstream>
 
 ClassImp(TracciaMC)
 /*
@@ -63,12 +64,12 @@ void TracciaMC::CalcCoeff(){
 	fC[2] = TMath::Cos(fTheta);				// c3
 }
 
-void TracciaMC::SetCoeff(vector<float> C){
+void TracciaMC::SetCoeff(vector<float> C){	
        for(int i=0; i<3; i++){
          fC[i]=C[i];}
 }
 
-void TracciaMC::SetOrigine(vector<float> O){
+void TracciaMC::SetOrigine(vector<float> O){ 
        for(int i=0; i<3; i++){
          origine[i]=O[i];}
 }

@@ -30,8 +30,8 @@ void Simulazione2(){
  
   // ______________grafico 3d intersezioni_______________
 		
-	TFile hfile("htree.root","RECREATE");	  
-        TTree *tree = new TTree("T","TTree con 2 branches");
+	TFile hfile2("htree2.root","RECREATE");	  
+        TTree *tree2 = new TTree("T2","TTree con 2 branches");
         
         int numeroeventi = 1000;
         
@@ -55,10 +55,10 @@ void Simulazione2(){
     
                    static VTX point;
 		 
-		   tree->Branch("VertMult",&point.X,"X/F:Y:Z:mult/I");
-                   tree->Branch("HitsPrimo",&ptrhits1);
-                   tree->Branch("HitsSecondo",&ptrhits2);
-                   tree->Branch("HitsTerzo",&ptrhits3);
+				   tree2->Branch("VertMult",&point.X,"X/F:Y:Z:mult/I");
+                   tree2->Branch("HitsPrimo",&ptrhits1);
+                   tree2->Branch("HitsSecondo",&ptrhits2);
+                   tree2->Branch("HitsTerzo",&ptrhits3);
                    
                    vector<float> coordinate, intersez;
                    Vertex vertice0;

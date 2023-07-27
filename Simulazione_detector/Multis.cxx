@@ -7,29 +7,29 @@
 ClassImp(Multis) //serve a root 
 
 
-Multis::Multis():TRandom3(){ 
-
-  Phip = 0.;
-  Thetap = 0.;
-   
+Multis::Multis():TRandom3(),
+ Thetap(0.),
+ Phip(0.)
+{ 
+ //////////////////// 
 }
  
 void Multis::NuoviAngoli(bool m){
-
-  if(m){
-  Phip = gRandom->Rndm()*2*TMath::Pi();
-  Thetap = gRandom->Gaus(0,0.001);}
-  
-  else{
-  Phip = 0.;
-  Thetap = 0.;}
-  }
+	if(m){
+		Phip = gRandom->Rndm()*2*TMath::Pi();
+		Thetap = gRandom->Gaus(0,0.001);
+	}
+	else{
+		Phip = 0.;
+		Thetap = 0.;
+	}
+}
 
 void Multis::VarioAngolo(TracciaMC track){
 
  float Phi = track.GetPhi();
  float Theta = track.GetTheta();
- 
+
  vector<float> cd = track.GetC();
 
  float mr[3][3];
