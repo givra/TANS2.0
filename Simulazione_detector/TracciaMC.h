@@ -11,8 +11,10 @@ class TracciaMC : public TRandom3 {
 	
 	public:
 	
-	//TracciaMC();	//costruttore di default
-	TracciaMC(float theta, float phi, float Xo, float Yo, float Zo);
+	TracciaMC();	//costruttore di default
+	TracciaMC(int label, float theta, float phi, float Xo, float Yo, float Zo);
+	
+	virtual ~TracciaMC();
 		
 	void SetDistribEta();			// distribuzione da vedere, per ora è gaussiana
 	void SetDistribPhi();			// uniforme
@@ -28,12 +30,14 @@ class TracciaMC : public TRandom3 {
 	float GetTheta();
 	
 	float GetT();
+	int GetLabel();
 	
 	vector<float> GetC();
 	
 	vector<float> intersezione(int layer);
 	
 	private:
+	int fLabel;
 	float fEta;
 	float fPhi;
 	float fTheta;

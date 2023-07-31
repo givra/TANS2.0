@@ -26,7 +26,7 @@ float fY;
 float fZ;
 float fPhi;
 
-ClassDef(Punto2,1)
+//ClassDef(Punto2,1)
 };
 
 

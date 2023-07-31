@@ -12,6 +12,7 @@
 public:
 
 	Smearing();
+	virtual ~Smearing();
 	void smearZ(float Ztrue);
 	void smearPhi(float Xtrue, float Ytrue);
 	float GetXrec();

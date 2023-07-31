@@ -3,6 +3,7 @@
 #include "TracciaMC.h" 
 #include "TObject.h" 
 #include "TRandom3.h"
+#include "TMath.h"
 
 ClassImp(Multis) //serve a root 
 
@@ -60,7 +61,9 @@ void Multis::VarioAngolo(TracciaMC track){
  track.SetCoeff(cd);
 }
 
-     
+Multis::~Multis() {
+	//distruttore di default
+}
       
       
       

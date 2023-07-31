@@ -26,7 +26,8 @@ fH(27.)
 }
 */
 
-TracciaMC::TracciaMC(float theta, float phi, float Xo, float Yo, float Zo):TRandom3(),
+TracciaMC::TracciaMC(int label, float theta, float phi, float Xo, float Yo, float Zo):TRandom3(),
+fLabel(label),
 fEta(0.),
 fPhi(phi),
 fTheta(theta),
@@ -45,7 +46,7 @@ fH(27.)
 
 void TracciaMC::SetDistribEta(){
 	//bisogna capire
-	//fEta = Gaus(0,1); 
+	//TFile hfile("kinem.root"); 
 	fEta = (gRandom->Rndm()*2) - 1;
 }
 
@@ -147,4 +148,12 @@ vector<float> TracciaMC::GetO(){
        
 float TracciaMC::GetT(){
 	return fT;				
+}
+
+int TracciaMC::GetLabel(){
+	return fLabel;
+}
+
+TracciaMC::~TracciaMC() {
+	// distruttore di default
 }

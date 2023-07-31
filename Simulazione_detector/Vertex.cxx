@@ -2,6 +2,7 @@
 #include "Vertex.h" 
 #include "TObject.h" 
 #include "TRandom3.h"
+#include "TMath.h"
 
 ClassImp(Vertex) //serve a root 
 
@@ -54,7 +55,9 @@ float Vertex::GetY(){return Y;}
 
 float Vertex::GetZ(){return Z;}
 
-
+Vertex::~Vertex() {
+	//distruttore di default
+}
 
 
 

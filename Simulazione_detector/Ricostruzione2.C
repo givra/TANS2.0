@@ -32,7 +32,7 @@ void Ricostruzione2(){
 	
 	//ofstream fout("intersez_rec.txt");
 	
-	                float X2, Y2, Z2; //coordinate intersezione secondo layer
+	        float X2, Y2, Z2; //coordinate intersezione secondo layer
 			
 			float X3, Y3, Z3;   //coordinate intersezione terzo layer
 			
@@ -46,7 +46,7 @@ void Ricostruzione2(){
 			
 			float differenza = 0;
 			float Zsim1;
-	                float Zrec1, Zrec;
+	        float Zrec1, Zrec;
 			
 		 
  //----------------------------------------lettura del tree		
@@ -81,7 +81,7 @@ void Ricostruzione2(){
 
  
 //---------------------------------------------------------------------
-   ofstream fileout1("Zrec.txt");
+   //ofstream fileout1("Zrec.txt");
    /* float mat[81][4][2];
     
     TClonesArray *ptrhitsgood2 = new TClonesArray("Punto2",numeroeventi);
@@ -180,14 +180,14 @@ void Ricostruzione2(){
 				 //l'intersezione con la beam line sarà il mio Zrec
 				 Zrec = Z3 - C[2]*t;
 				 
-				 hist -> Fill(Zrec);
+				 hist2 -> Fill(Zrec);
 				
 		}
 
-			fileout1 << hist->GetMean() << endl; //salvo la media di tutto il mio istogramma, di tutte le Zrec (anche quelle derivate da coppie sbagliate) nel file Zrec (solo una per evento)	
+			//fileout1 << hist2->GetMean() << endl; //salvo la media di tutto il mio istogramma, di tutte le Zrec (anche quelle derivate da coppie sbagliate) nel file Zrec (solo una per evento)	
                 
 		
-                hist->Reset("ICESM");
+                hist2->Reset("ICESM");
                 
                 
 		fin2.close();
@@ -200,17 +200,19 @@ void Ricostruzione2(){
 		
 		
 		
-		delete hist;
+		delete hist2;
 			
 	 
 						 
-		 fileout1.close();
-		 hfile.Close();
+		 //fileout1.close();
+		 hfile2.Close();
 		
 		 //creo grafico Ztrue-Zrec, avrò numeroeventi dati
 		 TCanvas *c1=new TCanvas("c1","c1",800,600);
 		 TH1D* hist1 = new TH1D ("h2","Ztrue-Zrec" , 100, -1, 1);
 		 
+		 // DA RIMPIAZZARE CON BRANCH DI TREE2
+		 /*
 		 ifstream filein0("Zsim.txt");
 	         ifstream filein1("Zrec.txt");	
 	         
@@ -220,7 +222,7 @@ void Ricostruzione2(){
 		 
 		 filein0 >> Zsim1;
 		 filein1 >> Zrec1;
-		 
+		 */
 		 differenza = Zsim1 - Zrec1;
 		 
 		 hist1 -> Fill(differenza); //grafico la differenza

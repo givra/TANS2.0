@@ -22,18 +22,18 @@
 
 using namespace std;
 
-void Simulazione2(){
+void Simulazione2(bool multipleScatt){
 	
   TStopwatch time;
 	
- bool multipleScatt = 1;		// 0 = false, 1 = true
+ //bool multipleScatt = 1;		// 0 = false, 1 = true
  
   // ______________grafico 3d intersezioni_______________
 		
 	TFile hfile2("htree2.root","RECREATE");	  
         TTree *tree2 = new TTree("T2","TTree con 2 branches");
         
-        int numeroeventi = 1000;
+        int numeroeventi = 100;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto2",numeroeventi);
         TClonesArray &hits1 = *ptrhits1;
@@ -46,7 +46,7 @@ void Simulazione2(){
         
       
         
-        ofstream fileout1("Zsim.txt"); //forse questo diventa inutile perchè ho già una foglia del tree con la Z del vertice
+        //ofstream fileout1("Zsim.txt"); //forse questo diventa inutile perchè ho già una foglia del tree con la Z del vertice
 		 
 		   typedef struct{
                    float X,Y,Z;
@@ -74,9 +74,17 @@ void Simulazione2(){
                      point.Y = vertice0.GetY();
                      point.Z = vertice0.GetZ();
 
-		 
+		        // Debug
+  /*  printf("Evento %d - moltepl: %d\n",evento,point.mult);
+    printf("x= %f ; y= %f; z= %f \n",point.X,point.Y,point.Z);
+    printf("Entries nel TClonesArray: %d\n",ptrhits1->GetEntries());
+    for (int j=0; j<hits1.GetEntries(); j++){
+      Punto *tst=(Punto*)ptrhits1->At(j);
+      cout<<"int primo layer "<<j<<") x, y, z = "<<tst->GetX()<<"; "<<tst->GetY()<<"; "<<tst->GetZ()<<endl;}
+    */
+    // fine del debug
 		
-		 fileout1 <<point.Z<<endl ;
+		 //fileout1 <<point.Z<<endl ;
 		 
 		 
 		  // __________creo oggetto Multis per il Multiple Scattering____________
@@ -86,11 +94,12 @@ void Simulazione2(){
 		 // __________calcolo intersezioni su ogni layer____________
 		
 		 int i = 0;
+		 int numParticella = 0;		// label per identificare le tracce simulate
 		 
 		 do{
 		 
 		
-			 TracciaMC tr(0.,0.,point.X,point.Y,point.Z);
+			 TracciaMC tr(numParticella,0.,0.,point.X,point.Y,point.Z);
 			 
 			 tr.SetDistribEta(); 
 			 tr.SetDistribPhi();
@@ -111,41 +120,36 @@ void Simulazione2(){
 				
 				Smearing ringo;
 				ringo.smearZ(intersez[2]);
-                                ringo.smearPhi(intersez[0], intersez[1]);
+                ringo.smearPhi(intersez[0], intersez[1]);
 				
 				if(t==0) new(hits1[i])Punto2(ringo.GetXrec(),ringo.GetYrec(),ringo.GetZrec(), ringo.GetPhirec());
 				if(t==1) new(hits2[i])Punto2(ringo.GetXrec(),ringo.GetYrec(),ringo.GetZrec(), ringo.GetPhirec());
 				if(t==2) new(hits3[i])Punto2(ringo.GetXrec(),ringo.GetYrec(),ringo.GetZrec(), ringo.GetPhirec());
 				
+				//debug
+				//cout << "numero traccia " << tr.GetLabel() << " Xrec: " << ringo.GetXrec() << " Yrec: " << ringo.GetYrec() << " Zrec: " << ringo.GetZrec() << endl;
 				}			
 			
 			 i++;
+			 numParticella++;
 			 
 		 }while( i < point.mult);
                
-               /*  // Debug
-    printf("Evento %d - moltepl: %d\n",evento,point.mult);
-    printf("x= %f ; y= %f; z= %f \n",point.X,point.Y,point.Z);
-    printf("Entries nel TClonesArray: %d\n",ptrhits1->GetEntries());
-    for (int j=0; j<hits1.GetEntries(); j++){
-      Punto *tst=(Punto*)ptrhits1->At(j);
-      cout<<"int primo layer "<<j<<") x, y, z = "<<tst->GetX()<<"; "<<tst->GetY()<<"; "<<tst->GetZ()<<endl;}*/
-    
-    // fine del debug
+          
 		 
-		 tree->Fill();
+		 tree2->Fill();
                  ptrhits1->Clear();
                  ptrhits2->Clear();
                  ptrhits3->Clear();
 		 }
 		
 		
-		 fileout1.close();
+		 //fileout1.close();
 		   // Save all objects in this file
-                 hfile.Write();
+                 hfile2.Write();
 
                 // Close the file. 
-                hfile.Close();
+                hfile2.Close();
                  
                   double TT = time.CpuTime();	
   cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;

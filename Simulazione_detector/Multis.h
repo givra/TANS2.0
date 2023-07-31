@@ -14,6 +14,7 @@ class Multis : public TRandom3 {
 public: 
   
   Multis();
+  virtual ~Multis();
   
  
   void VarioAngolo(TracciaMC track); //vado a modificare fC di track

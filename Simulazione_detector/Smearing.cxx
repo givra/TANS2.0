@@ -49,3 +49,7 @@ Smearing::Smearing():TRandom3(),
 	float Smearing::GetPhirec(){
 		return Phirec;
 	}
+	
+Smearing::~Smearing() {
+	//distruttore di default
+}

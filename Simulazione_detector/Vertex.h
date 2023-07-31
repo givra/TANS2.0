@@ -13,6 +13,7 @@ class Vertex : public TRandom3 { //Lo si fa ereditare da TRandom??
 public: 
   
   Vertex(); //costruttore di default, x,y,z=0 e molt=1
+  virtual ~Vertex();
   
   void NewVertex(); //coordinate gaussiane , distribuzione uniforme per molteplicità tra 1 e 80
  
