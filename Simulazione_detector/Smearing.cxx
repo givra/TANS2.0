@@ -8,9 +8,9 @@ ClassImp(Smearing)
 
 Smearing::Smearing():TRandom3(),
 	Zrec(0.),
-	Phirec(0.),
-	Xrec(0.),
-	Yrec(0.)
+	Phirec(0.)
+	//Xrec(0.),
+	//Yrec(0.)
 	{
 		//////////////////////////////
 	}
@@ -20,6 +20,33 @@ Smearing::Smearing():TRandom3(),
 		Zrec = Ztrue + gRandom->Gaus(0,0.012);
 	}
 	
+	void Smearing::smearPhi(float Phitrue, int layer){
+		
+		float R = 1;
+       
+       switch(layer)
+	   { case 1:
+	     R=3;
+	     break;
+	     
+             case 2:
+	     R=4;
+	     break;
+	     
+	     case 3:
+	     R=7;
+	     break;
+	     
+             default:
+	     cout<<"Ci sono solo 3 layer, inserisci un numero compreso tra 1 e 3"<<endl;
+	     break;
+		}
+		
+		
+		Phirec = Phitrue + (gRandom->Gaus(0,0.003))/R;
+		
+	}
+	/*vecchia versione con le tre coordinate X, Y e Z
 	void Smearing::smearPhi(float Xtrue, float Ytrue){
 		
 		float r = TMath::Sqrt(Xtrue*Xtrue + Ytrue*Ytrue);
@@ -32,15 +59,15 @@ Smearing::Smearing():TRandom3(),
 		Phirec = Phitrue + (gRandom->Gaus(0,0.003))/r;
 		Xrec = r*TMath::Cos(Phirec);
 		Yrec = r*TMath::Sin(Phirec);
-	}
+	}*/
 	
-	float Smearing::GetXrec(){
+	/*float Smearing::GetXrec(){
 		return Xrec;
 	}
 	
 	float Smearing::GetYrec(){
 		return Yrec;
-	}
+	}*/
 	
 	float Smearing::GetZrec(){
 		return Zrec;

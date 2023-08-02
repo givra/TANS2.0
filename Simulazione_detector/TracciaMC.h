@@ -7,12 +7,14 @@
 #include "TObject.h" 
 #include "TRandom3.h"
 
+using namespace std;
+
 class TracciaMC : public TRandom3 {
 	
 	public:
 	
 	TracciaMC();	//costruttore di default
-	TracciaMC(int label, float theta, float phi, float Xo, float Yo, float Zo);
+	TracciaMC(float theta, float phi, float Xo, float Yo, float Zo);
 	
 	virtual ~TracciaMC();
 		
@@ -21,30 +23,30 @@ class TracciaMC : public TRandom3 {
 	void Theta();		       // funzie che da Eta (Pseudorapidità) calcola Theta
 	
 	void CalcCoeff();	// calcola c1,c2,c3 a partire dagli angoli
-	void SetCoeff(vector<float>	C);	 
+	void SetCoeff(std::array<float,3> C);	 
 	
-	void SetOrigine(vector<float> O);	
-	vector<float> GetO();
+	void SetOrigine(std::array<float,2> inter, int lay);	
+	//vector<float> GetO();
 	
 	float GetPhi();
 	float GetTheta();
 	
 	float GetT();
-	int GetLabel();
+	//int GetLabel();
 	
-	vector<float> GetC();
+	std::array<float,3> GetC();
 	
-	vector<float> intersezione(int layer);
+	std::array<float,2> intersezione(int layer);
 	
 	private:
-	int fLabel;
+	//int fLabel;
 	float fEta;
 	float fPhi;
 	float fTheta;
 	
-	float* origine;
+	float origine[3];
 	
-	float* fC; 		// vettore con c1, c2, c3
+	float fC[3]; 		// vettore con c1, c2, c3
 	float fT;
 	float fH;
 	

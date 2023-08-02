@@ -20,7 +20,7 @@ public:
   void SetZUniform(); //impostare Z con distribuzione uniforme tra -20 e 20
   
   
-  vector<float> GetCoordinate();
+  //vector<float> GetCoordinate();
   int GetMolteplicity();
   
   float GetX();

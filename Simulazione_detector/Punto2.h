@@ -9,20 +9,18 @@ class Punto2 : public TObject
 public:
 
 Punto2();
-Punto2(float X, float Y, float Z, float Phi);
+Punto2(float Phi, float Z, int num);
 
 virtual ~Punto2();
 
- float GetX() const {return fX;} 
- float GetY() const {return fY;}
  float GetZ() const {return fZ;}
  float GetPhi() const {return fPhi;}
+ int Getnum() const {return fnum;}
 
 private:
 
 
-float fX;
-float fY;
+int fnum;
 float fZ;
 float fPhi;
 

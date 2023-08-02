@@ -15,12 +15,12 @@ void Compile(TString myopt="fast"){
   else {
     opt = "kg";
   }
-  //gSystem->CompileMacro("TracciaMC.cxx",opt.Data());
+  gSystem->CompileMacro("TracciaMC.cxx",opt.Data());
   gSystem->CompileMacro("Vertex.cxx",opt.Data());
-  //gSystem->CompileMacro("Multis.cxx",opt.Data());
-  //gSystem->CompileMacro("Smearing.cxx",opt.Data());
-  //gSystem->CompileMacro("Punto.cxx",opt.Data());
-  //gSystem->CompileMacro("Punto2.cxx",opt.Data());
-  //gSystem->CompileMacro("Simulazione2.C",opt.Data());
-  //gSystem->CompileMacro("Ricostruzione2.C",opt.Data());
+  gSystem->CompileMacro("Multis.cxx",opt.Data());
+  gSystem->CompileMacro("Smearing.cxx",opt.Data());
+  gSystem->CompileMacro("Punto.cxx",opt.Data());
+  gSystem->CompileMacro("Punto2.cxx",opt.Data());
+ // gSystem->CompileMacro("Simulazione2.C",opt.Data());
+ // gSystem->CompileMacro("Ricostruzione2.C",opt.Data());
 }

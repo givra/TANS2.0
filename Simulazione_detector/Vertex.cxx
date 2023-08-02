@@ -37,7 +37,7 @@ Z = (gRandom->Rndm()*40) - 20;
 }
 
 
-vector<float> Vertex::GetCoordinate(){
+/*vector<float> Vertex::GetCoordinate(){
 
 vector<float> cordinate;
 
@@ -45,7 +45,7 @@ cordinate.push_back(X);
 cordinate.push_back(Y);
 cordinate.push_back(Z);
 
-return cordinate;}
+return cordinate;}*/
 
 int Vertex::GetMolteplicity(){return moltep;}
 

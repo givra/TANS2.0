@@ -26,20 +26,23 @@ fH(27.)
 }
 */
 
-TracciaMC::TracciaMC(int label, float theta, float phi, float Xo, float Yo, float Zo):TRandom3(),
-fLabel(label),
+TracciaMC::TracciaMC(float theta, float phi, float Xo, float Yo, float Zo):TRandom3(),
+
 fEta(0.),
 fPhi(phi),
 fTheta(theta),
 fT(0.),
 fH(27.)
 { 
-   origine = new float[3];
+   //origine = new float[3];
    origine[0] = Xo;	
    origine[1] = Yo;
    origine[2] = Zo;
    
-   fC = new float[3];
+   //fC = new float[3];
+   fC[0] = 0.;
+   fC[1] = 0.;
+   fC[2] = 0.;
 }
 
 // MEMBER FUNCTIONS DEFINITIONS
@@ -65,14 +68,36 @@ void TracciaMC::CalcCoeff(){
 	fC[2] = TMath::Cos(fTheta);				// c3
 }
 
-void TracciaMC::SetCoeff(vector<float> C){	
+void TracciaMC::SetCoeff(std::array<float,3> C){	
        for(int i=0; i<3; i++){
          fC[i]=C[i];}
 }
 
-void TracciaMC::SetOrigine(vector<float> O){ 
-       for(int i=0; i<3; i++){
-         origine[i]=O[i];}
+void TracciaMC::SetOrigine(std::array<float,2> inter, int lay){ 
+
+         float R = 1;
+       
+       switch(lay)
+	   { case 1:
+	     R=3;
+	     break;
+	     
+             case 2:
+	     R=4;
+	     break;
+	     
+	     case 3:
+	     R=7;
+	     break;
+	     
+             default:
+	     cout<<"Ci sono solo 3 layer, inserisci un numero compreso tra 1 e 3"<<endl;
+	     break;
+		}
+
+         origine[0] = R*TMath::Cos(inter[0]);
+         origine[1] = R*TMath::Sin(inter[0]);
+         origine[2] = inter[1];
 }
 
 //funzione per il calcolo del parametro t
@@ -86,7 +111,7 @@ float t (float r, float x0, float y0, float C[3])
        
        }
        
-vector<float> TracciaMC::intersezione(int layer){
+std::array<float,2> TracciaMC::intersezione(int layer){
 
        float R = 1;
        
@@ -110,11 +135,16 @@ vector<float> TracciaMC::intersezione(int layer){
    
        fT = t(R,origine[0],origine[1],fC);
        
-       vector<float> coord_int;
+       std::array<float,2> coord_int;
+      // coord_int.reserve(2);
        
-       for(int i = 0; i < 3; i++){
+      coord_int[0] = TMath::ACos((origine[0] + fC[0]*fT)/R);
+      coord_int[1] = origine[2] + fC[2]*fT;
+      // coord_int.push_back(TMath::ACos((origine[0] + fC[0]*fT)/R));
+      // coord_int.push_back(origine[2] + fC[2]*fT);
+       /*for(int i = 0; i < 3; i++){
 		coord_int.push_back(origine[i] + fC[i]*fT);
-	}
+	}*/
 	
        return coord_int;}
        
@@ -126,17 +156,22 @@ float TracciaMC::GetTheta(){
 	return fTheta;				
 }
 
-vector<float> TracciaMC::GetC(){
+std::array<float,3> TracciaMC::GetC(){
 	
-	vector<float> C;
+	/*vector<float> C;
 
         C.push_back(fC[0]);
         C.push_back(fC[1]);
-        C.push_back(fC[2]);
+        C.push_back(fC[2]);*/
+        
+        std::array<float,3> C;
+        for(int i = 0; i < 3; i++){
+		C[i] = fC[i];
+	}
 
         return C;}
         
-vector<float> TracciaMC::GetO(){
+/*vector<float> TracciaMC::GetO(){
 	
 	vector<float> O;
 
@@ -144,16 +179,16 @@ vector<float> TracciaMC::GetO(){
         O.push_back(origine[1]);
         O.push_back(origine[2]);
 
-        return O;}
+        return O;}*/
        
 float TracciaMC::GetT(){
 	return fT;				
 }
 
-int TracciaMC::GetLabel(){
+/*int TracciaMC::GetLabel(){
 	return fLabel;
 }
-
+*/
 TracciaMC::~TracciaMC() {
 	// distruttore di default
 }

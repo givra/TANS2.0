@@ -31,7 +31,7 @@ void Multis::VarioAngolo(TracciaMC track){
  float Phi = track.GetPhi();
  float Theta = track.GetTheta();
 
- vector<float> cd = track.GetC();
+ std::array<float,3> cd = track.GetC();
 
  float mr[3][3];
 

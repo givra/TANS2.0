@@ -14,9 +14,9 @@ public:
 	Smearing();
 	virtual ~Smearing();
 	void smearZ(float Ztrue);
-	void smearPhi(float Xtrue, float Ytrue);
-	float GetXrec();
-	float GetYrec();
+	void smearPhi(float Phitrue, int layer);
+	//float GetXrec();
+	//float GetYrec();
 	float GetZrec();
 	float GetPhirec();
 	
@@ -24,8 +24,8 @@ private:
 
 	float Zrec;
 	float Phirec;
-	float Xrec;
-	float Yrec;
+	//float Xrec;
+	//float Yrec;
 	
  };
  
