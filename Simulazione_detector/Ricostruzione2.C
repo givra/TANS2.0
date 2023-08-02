@@ -92,8 +92,9 @@ void Ricostruzione2(){
   for(int ev=0;ev<tree2->GetEntries();ev++){
   
     tree2->GetEvent(ev);
-    cout<<"Evento "<<ev<<"; Molteplicita= "<<point.mult<<endl;
+    cout<<"Evento "<<ev<<"; Molteplicita= "<<point.mult;
    // cout<<"X,Y,Z = "<<point.X<<"; "<<point.Y<<"; "<<point.Z<<endl;
+    int iter = 0;
     
    Zsim[ev] = point.Z;		// riempio il vector coi dati simulati
 
@@ -109,16 +110,15 @@ void Ricostruzione2(){
 				Punto2 *tst3;
 				tst3=(Punto2*)hits3->At(b);
 				
-				//cout<<tst2->GetPhi()<<"        "<<tst3->GetPhi()<<endl;
+				//cout<< " " << tst2->GetPhi()<<"        "<<tst3->GetPhi()<<endl;
 
 					float deltaPhi = tst2->GetPhi() - tst3->GetPhi();
 					if(abs(deltaPhi) < 0.01){
 						
-						
-						new(ptrhitsgood2[a])Punto2(tst2->GetPhi(), tst2->GetZ(), tst2->Getnum());
-						new(ptrhitsgood3[b])Punto2(tst3->GetPhi(), tst3->GetZ(), tst3->Getnum());
-						
-					}
+						new(ptrhitsgood2[iter])Punto2(tst2->GetPhi(), tst2->GetZ(), tst2->Getnum());
+						new(ptrhitsgood3[iter])Punto2(tst3->GetPhi(), tst3->GetZ(), tst3->Getnum());
+						iter++;
+						}
 					else continue;
 					
 				}
@@ -134,7 +134,7 @@ void Ricostruzione2(){
 			// noi vogliamo solo la z
 			// impongo y=0 e x=0, trovo quindi due valori di t e li medio tra loro (x3/c1 e y3/c2)
 			
-				cout<<ptrhitsgood2.GetEntries()<<endl;
+				//cout<<" " <<ptrhitsgood2.GetEntries() << " " << ptrhitsgood3.GetEntries() <<endl;
 			for(int e=0; e<ptrhitsgood2.GetEntries(); e++)
 			{
 				Punto2 *tstgood2;
@@ -177,7 +177,7 @@ void Ricostruzione2(){
 				 
 				 hist2 -> Fill(Zrec);
 				
-		}
+			}
 
 			
 			Zvec[ev] = hist2->GetMean(); //salvo la media di tutto il mio istogramma, di tutte le Zrec (anche quelle derivate da coppie sbagliate) nel vector Zvec (solo una per evento)	
@@ -185,7 +185,7 @@ void Ricostruzione2(){
 		
                 hist2->Reset("ICESM");
                 ptrhitsgood2.Clear();
-	        ptrhitsgood3.Clear();
+				ptrhitsgood3.Clear();
 		}
 	
 		
@@ -213,6 +213,7 @@ void Ricostruzione2(){
 		TFile file1("ztrue-zrec-tree.root", "recreate");
 		hist1->Write();
 		file1.Close();
+		
 		
 		
   double TT = time.CpuTime();	
