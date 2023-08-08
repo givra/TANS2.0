@@ -21,21 +21,18 @@ void Ricostruzione2(){
 	
 	TStopwatch time;
 	
-	TH1D* hist2 = new TH1D ("h2","Zreconstructed versione2" , 80, -14., 14.);
+	//TCanvas *c1=new TCanvas("c1","c1",800,600);
+	TH1D* hist2 = new TH1D ("h2","Zreconstructed versione2" , 54, -13.5, 13.5);
 	
 	int iter; //iteratore
 	float deltaPhi;
 	
-        float X2, Y2, Z2, Phi2; //coordinate intersezione secondo layer
-        float X3, Y3, Z3, Phi3;   //coordinate intersezione terzo layer
+        float Z3, Z2, TanTheta;
 			
-	float C[3];   //coefficienti retta
-	float t;      //parametro retta
+	float q;      //termine noto retta
 				
 	float R2 = 4.;
 	float R3 = 7.;
-			
-	float Phi, Theta;
 			
 	float differenza = 0;
 	float Zsim1;
@@ -121,15 +118,8 @@ void Ricostruzione2(){
 			   }
 			
 				
-	         // __________tentativo ricostruzione vertice__________
-		 // eq retta passante per due punti A(x2,y2,z2) e B(x3,y3,z3)
-		 // x0 = x3 + c1t		c1 = sin(theta)*cos(phi)
-		 // y0 = y3 + c2t		c2 = sin(theta)*sin(phi)
-		 // z0 = z3 + c3t		c3 = cos(phi)
-		 // noi vogliamo solo la z
-		 // impongo y=0 e x=0, trovo quindi due valori di t e li medio tra loro (x3/c1 e y3/c2)
+	         // __________ricostruzione vertice__________
 			
-				
 		 for(int e=0; e<ptrhitsgood2.GetEntries(); e++){
 			
 			Punto2 *tstgood2;
@@ -137,72 +127,71 @@ void Ricostruzione2(){
 			tstgood2=(Punto2*)hitsgood2->At(e);
 			tstgood3=(Punto2*)hitsgood3->At(e);
 				
-			Phi2 = tstgood2->GetPhi();
-			X2 = R2*TMath::Cos(Phi2);
-			Y2 = R2*TMath::Sin(Phi2);
 			Z2 = tstgood2->GetZ();
 				
-			Phi3 = tstgood3->GetPhi();
-			X3 = R3*TMath::Cos(Phi3);
-			Y3 = R3*TMath::Sin(Phi3);
 			Z3 = tstgood3->GetZ();
 																
-			//calcolo Phi e Theta della retta passante tra i due punti
-		        if(X3 < X2){
-			    Phi = TMath::ATan((Y3-Y2)/(X3-X2)) + TMath::Pi();
-			    }
-			else Phi = TMath::ATan((Y3-Y2)/(X3-X2));
-								
-			if(Z3 < Z2){
-			    Theta = TMath::ATan((R3-R2)/(Z3-Z2)) + TMath::Pi();
-			    }
-			else Theta = TMath::ATan((R3-R2)/(Z3-Z2));
-				
-		        C[0] =  TMath::Sin(Theta)*TMath::Cos(Phi);		
-			C[1] =  TMath::Sin(Theta)*TMath::Sin(Phi);		        
-			C[2] =  TMath::Cos(Theta);	
+		 	TanTheta = (R3-R2)/(Z3-Z2);
+		 	
+		 	q = R3 - Z3*TanTheta; //termine noto retta
 			
-		        t = (X3/C[0] + Y3/C[1])/2;
+			Zrec2 = -q/TanTheta;
 				 
-		        //l'intersezione con la beam line sarà il mio Zrec2
-			Zrec2 = Z3 - C[2]*t;
-				 
-			hist2 -> Fill(Zrec2);				
+			hist2 -> Fill(Zrec2);
+							
 			}
-						
-		Zrec[ev] = hist2->GetMean(); //salvo la media di tutto il mio istogramma, di tutte le Zrec2 (anche quelle derivate da coppie sbagliate) nel vector Zrec (solo una per evento)	
-        		
+					
+	        //Zrec[ev] = hist2->GetMean(); //salvo la media di tutto il mio istogramma, di tutte le Zrec2 (anche quelle derivate da coppie sbagliate) nel vector Zrec (solo una per evento)	
+	        
+	        int Ymax = 0;
+		int Xmax = 0;	
+		
+        	for(int r = 0; r < 54 ;r++){
+        	       //cout<<"Bin numero  "<<r<<" valore associato di Z "<<-13.75 + r*0.5<<" numero di Zrec "<<hist2->GetBinContent(r)<<endl;
+        	       if(Ymax < hist2->GetBinContent(r)){
+        	                  Ymax = hist2->GetBinContent(r);
+        	                  
+        	                  Xmax = r;
+        	                  }
+        	        }
+        	
+        	if(Ymax > 4) Zrec[ev] = hist2->GetMean();//Zrec[ev] = -13.75 + Xmax*0.5;
+        	else Zrec[ev] = 100.;
+        	
+               
                 hist2->Reset("ICESM");
                 ptrhitsgood2.Clear();
 		ptrhitsgood3.Clear();
-		}
-	
+		
+	}
 		
 	delete hist2;
+	
         hfile2.Close();
 			
 	//creo grafico Ztrue-Zrec, avrò numeroeventi dati
 	TCanvas *c1=new TCanvas("c1","c1",800,600);
-        TH1D* hist1 = new TH1D ("h2","Ztrue-Zrec" , 100, -1, 1);	
+        TH1D* hist1 = new TH1D ("histofin","Ztrue-Zrec" , 250, -0.05, 0.05);	
 	         		 
 	for(int u = 0; u < numeroeventi; u++){
 		 
 	      Zsim1 = Zsim[u];
 	      Zrec1 = Zrec[u];
-		 
+	    
+	     if(Zrec1 != 100.){
 	      differenza = Zsim1 - Zrec1;
 		 
 	      hist1->Fill(differenza); //grafico la differenza
-	      }
+	      }}
 		 		 
-	 hist1->Draw();
+	 hist1->Draw("ep");
 	 
 	 TFile file1("ztrue-zrec-tree.root", "recreate");
 	 hist1->Write();
 	 file1.Close();
 				
          double TT = time.CpuTime();	
-         cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
+         cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  
   
          }
  
