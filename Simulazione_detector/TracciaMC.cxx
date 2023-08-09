@@ -3,10 +3,13 @@
 #include "TObject.h" 
 #include "TRandom3.h"
 #include "TMath.h"
+#include "TH1F.h"
+#include "TAxis.h"
+#include "TFile.h"
 #include <fstream>
 
 ClassImp(TracciaMC)
-/*
+
 TracciaMC::TracciaMC():TRandom3(),
 fEta(0.),
 fPhi(0.),
@@ -14,9 +17,9 @@ fTheta(0.),
 fT(0.),
 fH(27.)
 {
-
-   origine = new float[3];
-   fC = new float[3];
+ 
+  // origine = new float[3];
+  // fC = new float[3];
    origine[0] = 0.;	
    origine[1] = 0.;
    origine[2] = 0.;
@@ -24,36 +27,17 @@ fH(27.)
    fC[1] = 0.;
    fC[2] = 0.;
 }
-*/
-
-TracciaMC::TracciaMC(float theta, float phi, float Xo, float Yo, float Zo):TRandom3(),
-
-fEta(0.),
-fPhi(phi),
-fTheta(theta),
-fT(0.),
-fH(27.)
-{ 
-   //origine = new float[3];
-   origine[0] = Xo;	
-   origine[1] = Yo;
-   origine[2] = Zo;
-   
-   //fC = new float[3];
-   fC[0] = 0.;
-   fC[1] = 0.;
-   fC[2] = 0.;
-}
 
 // MEMBER FUNCTIONS DEFINITIONS
-
-void TracciaMC::SetDistribEta(){
-	//bisogna capire
-	//TFile hfile("kinem.root"); 
-	fEta = (gRandom->Rndm()*2) - 1;
+void TracciaMC::SetEtaUni(){
+              fEta = (gRandom->Rndm()*2) - 1;
 }
 
-void TracciaMC::SetDistribPhi(){
+void TracciaMC::SetEta(float Eta){
+              fEta = Eta;
+}
+
+void TracciaMC::SetPhi(){
 	fPhi = gRandom->Rndm()*2*TMath::Pi();		// distrib unif [0,2Pi]
 }
 
@@ -62,6 +46,14 @@ void TracciaMC::Theta(){
         fTheta = 2*TMath::ATan(argo);
 }
 
+void TracciaMC::SetOrigine(float Xo, float Yo, float Zo){
+ 
+   //origine = new float[3];
+   origine[0] = Xo;	
+   origine[1] = Yo;
+   origine[2] = Zo;
+   
+}
 void TracciaMC::CalcCoeff(){
 	fC[0] = TMath::Sin(fTheta)*TMath::Cos(fPhi);		// c1
 	fC[1] = TMath::Sin(fTheta)*TMath::Sin(fPhi);		        // c2
@@ -73,7 +65,7 @@ void TracciaMC::SetCoeff(std::array<float,3> C){
          fC[i]=C[i];}
 }
 
-void TracciaMC::SetOrigine(std::array<float,2> inter, int lay){ 
+void TracciaMC::SetHit(std::array<float,2> inter, int lay){ 
 
          float R = 1;
        
@@ -137,8 +129,12 @@ std::array<float,2> TracciaMC::intersezione(int layer){
        
        std::array<float,2> coord_int;
       // coord_int.reserve(2);
-       
-      coord_int[0] = TMath::ACos((origine[0] + fC[0]*fT)/R);
+      if((origine[1] + fC[1]*fT)>=0) coord_int[0] = TMath::ACos((origine[0] + fC[0]*fT)/R);
+      if((origine[1] + fC[1]*fT)<0) coord_int[0] = 2*TMath::Pi() - TMath::ACos((origine[0] + fC[0]*fT)/R);
+      
+      if(coord_int[0]<0) coord_int[0] = coord_int[0] + 2*TMath::Pi();
+      if(coord_int[0]>2*TMath::Pi()) coord_int[0] = coord_int[0] - 2*TMath::Pi();
+      
       coord_int[1] = origine[2] + fC[2]*fT;
       // coord_int.push_back(TMath::ACos((origine[0] + fC[0]*fT)/R));
       // coord_int.push_back(origine[2] + fC[2]*fT);

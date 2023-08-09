@@ -80,6 +80,10 @@ void Ricostruzione2(){
       
         TClonesArray *hitsgood3 = new TClonesArray("Punto2",100);
         TClonesArray &ptrhitsgood3 = *hitsgood3;
+        
+        //provo invece con vectors di float
+        //vector<float> Zgood2;
+        //vector<float> Zgood3;
 	
   	// loop sugli ingressi nel TTree
         for(int ev=0;ev<numeroeventi;ev++){
@@ -105,8 +109,10 @@ void Ricostruzione2(){
 				  if(tst3->Getnum()!=-1){
 					deltaPhi = tst2->GetPhi() - tst3->GetPhi();
 					if(abs(deltaPhi) < 0.01){						
-						new(ptrhitsgood2[iter])Punto2(tst2->GetPhi(), tst2->GetZ(), tst2->Getnum());
-						new(ptrhitsgood3[iter])Punto2(tst3->GetPhi(), tst3->GetZ(), tst3->Getnum());
+						new(ptrhitsgood2[iter])Punto2(0., tst2->GetZ(), tst2->Getnum());
+						new(ptrhitsgood3[iter])Punto2(0., tst3->GetZ(), tst3->Getnum());
+						//Zgood2.push_back(tst2->GetZ());
+						//Zgood3.push_back(tst3->GetZ());
 						iter++;
 						}
 					//else continue;
@@ -121,6 +127,7 @@ void Ricostruzione2(){
 	         // __________ricostruzione vertice__________
 			
 		 for(int e=0; e<ptrhitsgood2.GetEntries(); e++){
+		 //for(int e=0; e<Zgood2.size(); e++){
 			
 			Punto2 *tstgood2;
 			Punto2 *tstgood3;
@@ -130,6 +137,10 @@ void Ricostruzione2(){
 			Z2 = tstgood2->GetZ();
 				
 			Z3 = tstgood3->GetZ();
+			
+			//Z2 = Zgood2[e];
+				
+			//Z3 = Zgood3[e];
 																
 		 	TanTheta = (R3-R2)/(Z3-Z2);
 		 	
@@ -162,6 +173,8 @@ void Ricostruzione2(){
                 hist2->Reset("ICESM");
                 ptrhitsgood2.Clear();
 		ptrhitsgood3.Clear();
+		//Zgood2.clear();
+		//Zgood3.clear();
 		
 	}
 		

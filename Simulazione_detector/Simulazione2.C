@@ -11,6 +11,8 @@
 #include "TClonesArray.h"
 #include "Riostream.h"
 #include "TRandom3.h"
+#include "TH1F.h"
+#include "TAxis.h"
 
 #include "Punto2.h"
 #include "Vertex.h"
@@ -28,7 +30,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 	TFile hfile2("htree2.root","RECREATE");	  
         TTree *tree2 = new TTree("T2","TTree con 3 branches");
         
-        int numeroeventi = 1000;
+        int numeroeventi = 10000;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto2",100);
         TClonesArray &hits1 = *ptrhits1;
@@ -59,10 +61,40 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
                   
         Vertex vertice0; //vertice
         Multis catter; //multiple scattering
+        TracciaMC tr; //traccia
+        
+        TH1F* hist;
+        int scegli = 1; //1->uniforme 2->kinem.root
+        
+        if(scegli==2){
+               TFile F("kinem.root");
+               TH1F *disteta = (TH1F*)F.Get("heta2");
+               disteta->SetDirectory(0);
+               disteta->SetMinimum(0);
+               F.Close();
+               TAxis *xa=disteta->GetXaxis();
+               float step = xa->GetBinWidth(1);
+               int b1=xa->FindBin(-2.);
+               int b2=xa->FindBin(2.);
+ 
+               float xlow=xa->GetBinLowEdge(b1);
+               float xhig=xa->GetBinUpEdge(b2);
+               int nobins=b2-b1+1;
+               float step2 = (xhig-xlow)/nobins;
+  
+               hist = new TH1F("hist","#eta distribution 2",nobins,xlow,xhig);
+               int j=1;
+               for(int i=b1;i<=b2;i++)hist->SetBinContent(j++,disteta->GetBinContent(i));
+               
+          }
         
         int numSpuri = 5; //numero di eventi spuri simulati per ogni evento
         int numParticella; // label per identificare le tracce simulate
         int count=0;
+        
+        float u1, u2;
+        int fmax = 15344;
+        float Xt, Yt, f;
               
 	for(int evento = 0; evento < numeroeventi; evento++){
 	         //if(evento%50000==0) cout<<"siamo arrivati al numero "<<evento<<endl; //controllo su come procede la simulazione
@@ -78,11 +110,30 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		 numParticella = 0;		
 		 		 
 		 do{		 		
-			 TracciaMC tr(0.,0.,point.X,point.Y,point.Z); //creo oggetto traccia inserendo le coordinate del Vertice
+			 tr.SetOrigine(point.X,point.Y,point.Z); //setto come origine della traccia le coordinate del Vertice
 			 
-			 //imposto la direzione iniziale della particella, estratta casualmente
-			 tr.SetDistribEta(); 
-			 tr.SetDistribPhi();
+			 if(scegli==1) tr.SetEtaUni();
+			 
+			 if(scegli==2){//distribuzione data del file kinem.root
+        
+                         //il numero di bins è 34
+                         //il range va da -2.04 a 2.04
+                         //Xmax è 33 e Ymax è 15344
+         
+                         do{  
+                             u1 = gRandom->Rndm();
+                             u2 = gRandom->Rndm();
+  
+                             Yt = fmax*u2;
+                             Xt = (34*u1)/1;
+                             f = hist->GetBinContent(Xt);}
+                         while(f<=Yt);
+       
+                         tr.SetEta(((4.08)*(Xt)/(34))-2.04-((4.08)/(2*34)));
+                         }
+                         
+			 //imposto la direzione iniziale della particella, estratta casualmente			 
+			 tr.SetPhi();
 			 tr.Theta();			 
 			 tr.CalcCoeff();
 			 
@@ -103,7 +154,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 			    
 			    catter.NuoviAngoli(multipleScatt); //estraggo nuovi angoli del multiple scattering casuali (se multipleScatt = 1)
 		            catter.VarioAngolo(tr); //conseguentemente cambiano gli angoli della direzione della particella 
-			    tr.SetOrigine(intersez, t+1); //l'intersezione è un punto della nuova retta descritta dalla particella
+			    tr.SetHit(intersez, t+1); //l'intersezione è un punto della nuova retta descritta dalla particella
 				
 			    Smearing ringo; //estratti gaussianamente un dZ e dPhi che si andranno a sommare alle variabili vere
 			    ringo.smearZ(intersez[1]);
@@ -141,7 +192,8 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
                  ptrhits2->Clear();
                  ptrhits3->Clear();
 		 }
-				 
+		
+		 delete hist;		 
 		 //salvo il tree sul file e lo chiudo
                  hfile2.Write();              
                  hfile2.Close();
@@ -150,3 +202,9 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
                  cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
 	
  }
+ 
+ 
+
+  
+  
+  
