@@ -2,7 +2,7 @@
 #include <fstream>
 #include <math.h>
 
-#include "Punto.h"
+//#include "Punto.h"
 #include "Punto2.h"
 #include "TClonesArray.h"
 #include "Vertex.h"
@@ -22,27 +22,52 @@ void Ricostruzione2(){
 	TStopwatch time;
 	
 	//TCanvas *c1=new TCanvas("c1","c1",800,600);
-	TH1D* hist2 = new TH1D ("h2","Zreconstructed versione2" , 54, -13.5, 13.5);
+    static TH1D* hist1 = new TH1D ("histofin","Zrec-Ztrue" , 250, -0.05, 0.05);
+	static TH1D* hist2 = new TH1D ("h2","Zreconstructed versione2" , 54, -13.5, 13.5);
+	// histo per efficienza
+	static TH1D* histM3 = new TH1D("hM3","2.5 < molteplicità < 3.5", 250, -10., 10.);// fatto per molteplicità 3
+	static TH1D* histM5 = new TH1D("hM5","4.5 < molteplicità < 5.5", 250, -10., 10.);
+	static TH1D* histM6 = new TH1D("hM6","5.5 < molteplicità < 6.5", 250, -10., 10.);
+	static TH1D* histM7 = new TH1D("hM7","6.5 < molteplicità < 7.5", 250, -10., 10.);
+	static TH1D* histM8 = new TH1D("hM8","7.5 < molteplicità < 8.5", 250, -10., 10.);
+	static TH1D* histM12 = new TH1D("hM12","11.5 < molteplicità < 12.5", 250, -10., 10.);
+	static TH1D* histM22 = new TH1D("hM22","21.5 < molteplicità < 22.5", 250, -10., 10.);
+	static TH1D* histM32 = new TH1D("hM32","31.5 < molteplicità < 32.5", 250, -10., 10.);
+	static TH1D* histM42 = new TH1D("hM42","41.5 < molteplicità < 42.5", 250, -10., 10.);
+	static TH1D* histM52 = new TH1D("hM52","51.5 < molteplicità < 52.5", 250, -10., 10.);
 	
-	int iter; //iteratore
+   
+	static int iter; //iteratore
 	float deltaPhi;
 	
-        float Z3, Z2, TanTheta;
+    float Z3, Z2, TanTheta;
 			
 	float q;      //termine noto retta
 				
-	float R2 = 4.;
-	float R3 = 7.;
+	static float R2 = 4.;
+	static float R3 = 7.;
 			
 	float differenza = 0;
-	float Zsim1;
-	float Zrec1, Zrec2;
-			
+	//float Zsim1;
+	//float Zrec1;
+	float Zrec2;
+	float nZrec = 0;		// float altrimenti approssima l'eff all'int 0
+	float moltep[10] = {0,0,0,0,0,0,0,0,0,0}; 		// array contenente le moltep di ogni evento da passare al TGraph
+	float errmoltep[10] = {0,0,0,0,0,0,0,0,0,0};	// binomiale??
+	float eff[10] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le efficienze
+	float erreff[10] = {0,0,0,0,0,0,0,0,0,0};
+	const int size = 10; 			// dimensione array per TGraph
+	
         //definizione struct
         typedef struct {
            float X,Y,Z;
            int mult;} VTX;
         static VTX point;
+		
+		typedef struct{
+			float x0,x1,x2,x3,x4,x5,x6,x7,x8,x9;		// Z simulate con un certo valore di moltep, sarà denominatore dell'efficienza
+			} vett;
+		static vett denEff;
   
         //apertura file di input
         TFile hfile2("htree2.root");
@@ -53,12 +78,21 @@ void Ricostruzione2(){
         TBranch *b2=tree2->GetBranch("HitsPrimo");
         TBranch *b3=tree2->GetBranch("HitsSecondo");
         TBranch *b4=tree2->GetBranch("HitsTerzo");
-  
+		
+		
+		TFile hfile3("htree3.root");
+		TTree *tree3 = (TTree*)hfile3.Get("T3");
+		TBranch *branch3 = tree3->GetBranch("denEff");
+		
+		
+		
         numeroeventi = tree2->GetEntries(); //acquisico informazione sul numero di eventi nel mio detector
         	
 	//arrays contenenti Z ricostruite e simulate
         float Zrec[numeroeventi];
         float Zsim[numeroeventi];	
+		
+				
   
         //dichiarazione TClonesArray
         //TClonesArray *hits1 = new TClonesArray("Punto2",numeroeventi); //per la ricostruzione non usiamo il primo layer
@@ -67,69 +101,78 @@ void Ricostruzione2(){
       
         TClonesArray *hits3 = new TClonesArray("Punto2",100);
         TClonesArray &ptrhits3 = *hits3;
+		
+		//float denEff[10];
   
         //definizione degli indirizzi per la lettura dei dati su ttree
         b1->SetAddress(&point.X);
+		
         //b2->SetAddress(&hits1); //relativo al primo layer
         b3->SetAddress(&hits2);
         b4->SetAddress(&hits3);
+		branch3->SetAddress(&denEff.x0);
   
         //arrays in cui salvo le buone combinazioni di hits
-        TClonesArray *hitsgood2 = new TClonesArray("Punto2",100);
+    /*    TClonesArray *hitsgood2 = new TClonesArray("Punto2",100);
         TClonesArray &ptrhitsgood2 = *hitsgood2;
       
         TClonesArray *hitsgood3 = new TClonesArray("Punto2",100);
         TClonesArray &ptrhitsgood3 = *hitsgood3;
-        
+    */    
         //provo invece con vectors di float
-        //vector<float> Zgood2;
-        //vector<float> Zgood3;
-	
-  	// loop sugli ingressi nel TTree
+        vector<float> Zgood2;
+        vector<float> Zgood3;
+		
+		
+		
+	// loop sugli ingressi nel TTree
         for(int ev=0;ev<numeroeventi;ev++){
                 
                 iter = 0;
-                
+				
+				
+				tree3->GetEvent(ev);
                 tree2->GetEvent(ev);
                 //cout<<"Evento "<<ev<<"; Molteplicita= "<<point.mult<<endl; 
                 // cout<<"X,Y,Z = "<<point.X<<"; "<<point.Y<<"; "<<point.Z<<endl;
                     
-                Zsim[ev] = point.Z; //riempio il vector coi dati simulati
+                Zsim[ev] = point.Z; //riempio l'array coi dati simulati
 
                 for(int a = 0; a < point.mult; a++){
 			     
-			  Punto2 *tst2;
-			  tst2=(Punto2*)hits2->At(a);
-				
-			  if(tst2->Getnum()!=-1){
-			      for(int b = 0; b < point.mult; b++){
+					Punto2 *tst2;
+					tst2=(Punto2*)hits2->At(a);
+						
+					if(tst2->Getnum()!=-1){			// escludiamo hits fuori dal rivelatore
+						for(int b = 0; b < point.mult; b++){
 				  
-				  Punto2 *tst3;
-				  tst3=(Punto2*)hits3->At(b);
-				  if(tst3->Getnum()!=-1){
-					deltaPhi = tst2->GetPhi() - tst3->GetPhi();
-					if(abs(deltaPhi) < 0.01){						
-						new(ptrhitsgood2[iter])Punto2(0., tst2->GetZ(), tst2->Getnum());
-						new(ptrhitsgood3[iter])Punto2(0., tst3->GetZ(), tst3->Getnum());
-						//Zgood2.push_back(tst2->GetZ());
-						//Zgood3.push_back(tst3->GetZ());
-						iter++;
-						}
+							Punto2 *tst3;
+							tst3=(Punto2*)hits3->At(b);
+							if(tst3->Getnum()!=-1){
+							deltaPhi = tst2->GetPhi() - tst3->GetPhi();
+								if(abs(deltaPhi) < 0.01){						
+									//new(ptrhitsgood2[iter])Punto2(0., tst2->GetZ(), tst2->Getnum());
+									//new(ptrhitsgood3[iter])Punto2(0., tst3->GetZ(), tst3->Getnum());
+									Zgood2.push_back(tst2->GetZ());
+									Zgood3.push_back(tst3->GetZ());
+									iter++;
+								}
 					//else continue;
-					}
+							}
 				   //else continue;
-				   }
+						}
 			       }
 			   //else continue;
 			   }
 			
 				
 	         // __________ricostruzione vertice__________
+			if(Zgood2.size() != Zgood3.size()) cout << " Zgood2 e Zgood3 hanno dimensioni diverse: " << Zgood2.size() << " " << Zgood3.size() << endl;	
 			
-		 for(int e=0; e<ptrhitsgood2.GetEntries(); e++){
-		 //for(int e=0; e<Zgood2.size(); e++){
+		// for(int e=0; e<ptrhitsgood2.GetEntries(); e++){	
+			for(int e=0; e<Zgood2.size(); e++){		// ciclo sui punti buoni
 			
-			Punto2 *tstgood2;
+		/*	Punto2 *tstgood2;
 			Punto2 *tstgood3;
 			tstgood2=(Punto2*)hitsgood2->At(e);
 			tstgood3=(Punto2*)hitsgood3->At(e);
@@ -137,27 +180,27 @@ void Ricostruzione2(){
 			Z2 = tstgood2->GetZ();
 				
 			Z3 = tstgood3->GetZ();
-			
-			//Z2 = Zgood2[e];
+		*/	
+				Z2 = Zgood2[e];
+					
+				Z3 = Zgood3[e];
 				
-			//Z3 = Zgood3[e];
-																
-		 	TanTheta = (R3-R2)/(Z3-Z2);
-		 	
-		 	q = R3 - Z3*TanTheta; //termine noto retta
+				TanTheta = (R3-R2)/(Z3-Z2);
+				
+				q = R3 - Z3*TanTheta; //termine noto retta
+				
+				Zrec2 = -q/TanTheta;
+					
+				hist2 -> Fill(Zrec2);		// riempio l'histo con gli Zrec dati dalle coppie "buone"
 			
-			Zrec2 = -q/TanTheta;
-				 
-			hist2 -> Fill(Zrec2);
-							
 			}
 					
 	        //Zrec[ev] = hist2->GetMean(); //salvo la media di tutto il mio istogramma, di tutte le Zrec2 (anche quelle derivate da coppie sbagliate) nel vector Zrec (solo una per evento)	
 	        
 	        int Ymax = 0;
-		int Xmax = 0;	
+			int Xmax = 0;	
 		
-        	for(int r = 0; r < 54 ;r++){
+        	for(int r = 0; r < 54 ;r++){		// 54 bin decisi arbitrariamente
         	       //cout<<"Bin numero  "<<r<<" valore associato di Z "<<-13.75 + r*0.5<<" numero di Zrec "<<hist2->GetBinContent(r)<<endl;
         	       if(Ymax < hist2->GetBinContent(r)){
         	                  Ymax = hist2->GetBinContent(r);
@@ -165,25 +208,133 @@ void Ricostruzione2(){
         	                  Xmax = r;
         	                  }
         	        }
-        	
-        	if(Ymax > 4) Zrec[ev] = hist2->GetMean();//Zrec[ev] = -13.75 + Xmax*0.5;
-        	else Zrec[ev] = 100.;
-        	
+        	// sotto le 2 hits non ricostruiamo -> associamo Z=100 per poi scartare il dato
+        	if(Ymax > 2){
+				//if(hist2->GetMean() < 5.3*3 && hist2->GetMean() > 5.3*3){		// controllo su 3sigma
+				Zrec[ev] = hist2->GetMean(); //Zrec[ev] = -13.75 + Xmax*0.5;
+				nZrec++;		// conto Z buone
+				//}
+			}
+        	else{
+				Zrec[ev] = 100.;
+				
+			}
                
                 hist2->Reset("ICESM");
-                ptrhitsgood2.Clear();
-		ptrhitsgood3.Clear();
-		//Zgood2.clear();
-		//Zgood3.clear();
+                //ptrhitsgood2.Clear();
+				//ptrhitsgood3.Clear();
+				Zgood2.clear();
+				Zgood3.clear();
+				
+			if(Zrec[ev] != 100.){
+			differenza = Zrec[ev] - Zsim[ev];
+			hist1->Fill(differenza);
+			//if(point.mult == 4) histM4->Fill(differenza);
+			//if(point.mult) histM45->Fill(differenza);
+			
+			
+				switch(point.mult)
+				{case 3:
+					histM3->Fill(differenza);
+					moltep[0] = point.mult;
+					break;
+				 case 5:
+					histM5->Fill(differenza);
+					
+					moltep[1] = point.mult;
+					break;
+				 case 6:
+					histM6->Fill(differenza);
+					
+					moltep[2] = point.mult;
+					break;
+				 case 7:
+					histM7->Fill(differenza);
+					
+					moltep[3] = point.mult;
+					break;
+				 case 8:
+					histM8->Fill(differenza);
+					
+					moltep[4] = point.mult;
+					break;
+				 case 12:
+					histM12->Fill(differenza);
+					
+					moltep[5] = point.mult;
+					break;
+				 case 22:
+					histM22->Fill(differenza);
+					
+					moltep[6] = point.mult;
+					break;
+				 case 32:
+					histM32->Fill(differenza);
+					
+					moltep[7] = point.mult;
+					break;
+				 case 42:
+					histM42->Fill(differenza);
+					
+					moltep[8] = point.mult;
+					break;
+				 case 52:
+					histM52->Fill(differenza);
+					
+					moltep[9] = point.mult;
+					break;	
+				}
+	
+			}
+			
 		
-	}
+		}		// fine ciclo eventi
 		
-	delete hist2;
+		// # di Z ricostruite con una certa moltep su quelle simulate
+		eff[0] = histM3->GetEntries()/denEff.x0;		
+		eff[1] = histM5->GetEntries()/denEff.x1;
+		eff[2] = histM6->GetEntries()/denEff.x2;
+		eff[3] = histM7->GetEntries()/denEff.x3;
+		eff[4] = histM8->GetEntries()/denEff.x4;
+		eff[5] = histM12->GetEntries()/denEff.x5;
+		eff[6] = histM22->GetEntries()/denEff.x6;
+		eff[7] = histM32->GetEntries()/denEff.x7;
+		eff[8] = histM42->GetEntries()/denEff.x8;
+		eff[9] = histM52->GetEntries()/denEff.x9;
+		//eff = nZrec/numeroeventi;			
+		cout << " num 0 " << histM3->GetEntries() << " den " << denEff.x0 << endl;
+		cout << " num 1 " << histM5->GetEntries() << " den " << denEff.x1 << endl;
+		cout << " num 2 " << histM6->GetEntries() << " den " << denEff.x2 << endl;
+		cout << " num 3 " << histM7->GetEntries() << " den " << denEff.x3 << endl;
+		cout << " num 4 " << histM8->GetEntries() << " den " << denEff.x4 << endl;
+		cout << " num 5 " << histM12->GetEntries() << " den " << denEff.x5 << endl;
+		cout << " num 6 " << histM22->GetEntries() << " den " << denEff.x6 << endl;
+		cout << " num 7 " << histM32->GetEntries() << " den " << denEff.x7 << endl;
+		cout << " num 8 " << histM42->GetEntries() << " den " << denEff.x8 << endl;
+		cout << " num 9 " << histM52->GetEntries() << " den " << denEff.x9 << endl;
+		
+		for(int i = 0; i < 10; i++){
+			 cout << i << " " << eff[i] << " " << moltep[i] << endl;
+			
+		 }
+		
+		
+		//TCanvas *c1=new TCanvas("c1","c1",800,600);
+		TGraphErrors *graphE= new TGraphErrors(size,moltep,eff,errmoltep,erreff);
+		graphE->SetMarkerSize(0.9);//https://root.cern.ch/doc/master/classTAttMarker.html
+		graphE->SetMarkerStyle(43);
+		graphE->SetTitle("Efficiency vs molteplicity");
+		graphE->GetXaxis()->SetTitle("molteplicity[]");
+		graphE->GetYaxis()->SetTitle("efficiency[]");
+		//c1->cd();
+		graphE->Draw("AP");
+		
+		delete hist2;
 	
         hfile2.Close();
 			
 	//creo grafico Ztrue-Zrec, avrò numeroeventi dati
-	TCanvas *c1=new TCanvas("c1","c1",800,600);
+/*	TCanvas *c1=new TCanvas("c1","c1",800,600);
         TH1D* hist1 = new TH1D ("histofin","Ztrue-Zrec" , 250, -0.05, 0.05);	
 	         		 
 	for(int u = 0; u < numeroeventi; u++){
@@ -196,12 +347,36 @@ void Ricostruzione2(){
 		 
 	      hist1->Fill(differenza); //grafico la differenza
 	      }}
-		 		 
+*/		 		 
 	 hist1->Draw("ep");
 	 
-	 TFile file1("ztrue-zrec-tree.root", "recreate");
+	 TFile file1("zrec-ztrue-tree.root", "recreate");
 	 hist1->Write();
+	 histM3->Write(); 
+	 histM5->Write(); 
+	 histM6->Write(); 
+	 histM7->Write(); 
+	 histM8->Write(); 
+	 histM12->Write();
+	 histM22->Write();
+	 histM32->Write();
+	 histM42->Write();
+	 histM52->Write();
+	 graphE->Write();
 	 file1.Close();
+	 delete hist1;
+	 delete histM3;
+	 delete histM5;
+	 delete histM6;
+	 delete histM7;
+	 delete histM8;
+	 delete histM12;
+	 delete histM22;
+	 delete histM32;
+	 delete histM42;
+	 delete histM52;
+	 delete graphE;
+	 graphE = nullptr;
 				
          double TT = time.CpuTime();	
          cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  

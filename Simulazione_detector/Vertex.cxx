@@ -27,6 +27,7 @@ Y = gRandom->Gaus(0,0.01); //coordinata y
 Z = gRandom->Gaus(0,5.3); //coordinata z
 
 moltep = 1 + (gRandom->Rndm()*80)/1;
+//moltep = 45;
 }
  
 

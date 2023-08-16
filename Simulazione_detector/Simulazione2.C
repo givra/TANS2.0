@@ -24,13 +24,19 @@ using namespace std;
 
 void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 	
-        TStopwatch time;	
-	 
+        TStopwatch time;
+
         //creo Tree dove intendo salvare i miei dati
-	TFile hfile2("htree2.root","RECREATE");	  
+		TFile hfile2("htree2.root","RECREATE");	
         TTree *tree2 = new TTree("T2","TTree con 3 branches");
+		// tree2->SetDirectory(&hfile2);
+		
+		// se provo a salvare tutto sul tree2 mi dà segmentation violation :)
+		TFile hfile3("htree3.root","RECREATE");			
+		TTree *tree3 = new TTree("T3","TTree dati efficienza");
+		// tree3->SetDirectory(&hfile3);
         
-        int numeroeventi = 10000;
+        int numeroeventi = 1000;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto2",100);
         TClonesArray &hits1 = *ptrhits1;
@@ -40,7 +46,12 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
         
         TClonesArray *ptrhits3 = new TClonesArray("Punto2",100);
         TClonesArray &hits3 = *ptrhits3;
-        
+		
+		typedef struct{
+			float x0,x1,x2,x3,x4,x5,x6,x7,x8,x9;		// Z simulate con un certo valore di moltep, sarà denominatore dell'efficienza
+			} vett;
+		static vett denEff;
+		
         //definisco una struct che contiene l'informazione sulla posizione e la molteplicità del vertice
 		 
         typedef struct{
@@ -54,6 +65,8 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
         tree2->Branch("HitsPrimo",&ptrhits1);
         tree2->Branch("HitsSecondo",&ptrhits2);
         tree2->Branch("HitsTerzo",&ptrhits3);
+		
+		tree3->Branch("denEff",&denEff.x0, "x0:x1:x2:x3:x4:x5:x6:x7:x8:x9/F");
                    
         //creo gli oggetti da usare per ogni evento della simulazione         
         
@@ -64,9 +77,9 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
         TracciaMC tr; //traccia
         
         TH1F* hist;
-        int scegli = 1; //1->uniforme 2->kinem.root
+        int scegli = 2; //1->uniforme 2->kinem.root
         
-        if(scegli==2){
+		if(scegli==2){
                TFile F("kinem.root");
                TH1F *disteta = (TH1F*)F.Get("heta2");
                disteta->SetDirectory(0);
@@ -84,7 +97,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
   
                hist = new TH1F("hist","#eta distribution 2",nobins,xlow,xhig);
                int j=1;
-               for(int i=b1;i<=b2;i++)hist->SetBinContent(j++,disteta->GetBinContent(i));
+               for(int i=b1;i<=b2+1;i++)hist->SetBinContent(j++,disteta->GetBinContent(i));
                
           }
         
@@ -95,6 +108,18 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
         float u1, u2;
         int fmax = 15344;
         float Xt, Yt, f;
+		
+		float count3 = 0;
+		float count5 = 0;
+		float count6 = 0;
+		float count7 = 0;
+		float count8 = 0;
+		float count12 = 0;
+		float count22 = 0;
+		float count32 = 0;
+		float count42 = 0;
+		float count52 = 0;
+		
               
 	for(int evento = 0; evento < numeroeventi; evento++){
 	         //if(evento%50000==0) cout<<"siamo arrivati al numero "<<evento<<endl; //controllo su come procede la simulazione
@@ -102,10 +127,55 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		 	
 		 //salvo informazioni nell'oggetto point	 
 		 point.mult = vertice0.GetMolteplicity();
+		 
                  point.X = vertice0.GetX();
                  point.Y = vertice0.GetY();
                  point.Z = vertice0.GetZ();
 		       		 		 
+		 // conto quante Z ho per ogni valore di molteplicità
+		 switch(point.mult)
+		 {case 3:
+				count3++;
+				//cout << " n evento " << evento << " count3 " << count3 << endl;
+				break;
+		  case 5:
+				count5++;
+				//cout << " n evento " << evento << " count5 " << count5 << endl;
+				break;
+		  case 6:
+				count6++;
+				//cout << " n evento " << evento << " count6 " << count6 << endl;
+				break;
+		  case 7:
+				count7++;
+				//cout << " n evento " << evento << " count7 " << count7 << endl;
+		        break;
+		  case 8:
+				count8++;
+				//cout << " n evento " << evento << " count8 " << count8 << endl;
+		        break;
+		  case 12:
+				count12++;
+				//cout << " n evento " << evento << " count12 " << count12 << endl;
+		        break;
+		  case 22:
+				count22++;
+				//cout << " n evento " << evento << " count22 " << count22 << endl;
+		        break;
+		  case 32:
+				count32++;
+				//cout << " n evento " << evento << " count32 " << count32 << endl;
+		        break;
+		  case 42:
+				count42++;
+				//cout << " n evento " << evento << " count42 " << count42 << endl;
+		        break;
+		  case 52:
+				count52++;
+				//cout << " n evento " << evento << " count52 " << count52 << endl;
+		        break;
+			 
+		 }
 		 //calcolo intersezioni su ogni layer		
 		 numParticella = 0;		
 		 		 
@@ -131,7 +201,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
        
                          tr.SetEta(((4.08)*(Xt)/(34))-2.04-((4.08)/(2*34)));
                          }
-                         
+                        
 			 //imposto la direzione iniziale della particella, estratta casualmente			 
 			 tr.SetPhi();
 			 tr.Theta();			 
@@ -150,26 +220,26 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 			 
 		          intersez = tr.intersezione(t+1); //calcolo intersezione con il layer
 		          
-		          if((intersez[1] >= -27/2) && (intersez[1] <= 27/2)){									
+		        if((intersez[1] >= -27/2) && (intersez[1] <= 27/2)){									
 			    
-			    catter.NuoviAngoli(multipleScatt); //estraggo nuovi angoli del multiple scattering casuali (se multipleScatt = 1)
-		            catter.VarioAngolo(tr); //conseguentemente cambiano gli angoli della direzione della particella 
-			    tr.SetHit(intersez, t+1); //l'intersezione è un punto della nuova retta descritta dalla particella
+					catter.NuoviAngoli(multipleScatt); // estraggo nuovi angoli del multiple scattering casuali (se multipleScatt = 1)
+		            catter.VarioAngolo(tr); // conseguentemente cambiano gli angoli della direzione della particella 
+					tr.SetHit(intersez, t+1); // l'intersezione è un punto della nuova retta descritta dalla particella
 				
-			    Smearing ringo; //estratti gaussianamente un dZ e dPhi che si andranno a sommare alle variabili vere
-			    ringo.smearZ(intersez[1]);
-                            ringo.smearPhi(intersez[0], t+1);
-                                
-                            //inserisco le hits dentro ai branches del tree   				
-			    if(t==0) new(hits1[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
-			    if(t==1) new(hits2[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
-			    if(t==2) new(hits3[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+					Smearing ringo; //estratti gaussianamente un dZ e dPhi che si andranno a sommare alle variabili vere
+					ringo.smearZ(intersez[1]);
+					ringo.smearPhi(intersez[0], t+1);
+									
+								//inserisco le hits dentro ai branches del tree   				
+					if(t==0) new(hits1[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+					if(t==1) new(hits2[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+					if(t==2) new(hits3[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
 			    }
-			  
+				// se sta fuori dal rivelatore assegno label -1
 			    else{
-			    if(t==0) new(hits1[numParticella])Punto2(intersez[0],intersez[1], -1);
-			    if(t==1) new(hits2[numParticella])Punto2(intersez[0],intersez[1], -1);
-			    if(t==2) new(hits3[numParticella])Punto2(intersez[0],intersez[1], -1);
+					if(t==0) new(hits1[numParticella])Punto2(intersez[0],intersez[1], -1);
+					if(t==1) new(hits2[numParticella])Punto2(intersez[0],intersez[1], -1);
+					if(t==2) new(hits3[numParticella])Punto2(intersez[0],intersez[1], -1);
 			    }
 				
 			  }			
@@ -180,7 +250,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
                
                  // aggiungo ora numSpuri punti spuri su ciascun layer
 		 for(int u=0; u<numSpuri; u++){
-		    new(hits1[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
+		    //new(hits1[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
 		    new(hits2[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
 		    new(hits3[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
 		    }
@@ -191,13 +261,39 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
                  ptrhits1->Clear();
                  ptrhits2->Clear();
                  ptrhits3->Clear();
-		 }
+		 }		// fine ciclo eventi
+		 
+		 hfile2.Write();              
+         hfile2.Close();
+		 
+		 cout  << " count3 " << count3 << endl;
+		 cout  << " count5 " << count5 << endl;
+		 cout  << " count42 " << count42 << endl;
+		 cout  << " count52 " << count52 << endl;
+		 
+		 denEff.x0 = count3;
+		 denEff.x1 = count5;
+		 denEff.x2 = count6;
+		 denEff.x3 = count7;
+		 denEff.x4 = count8;
+		 denEff.x5 = count12;
+		 denEff.x6 = count22;
+		 denEff.x7 = count32;
+		 denEff.x8 = count42;
+		 denEff.x9 = count52;
+		 tree3->Fill();
+		 
+
+			 cout << denEff.x0 << " " ;
+		 
 		
-		 delete hist;		 
+		 		 
 		 //salvo il tree sul file e lo chiudo
-                 hfile2.Write();              
-                 hfile2.Close();
                  
+                 hfile3.Write();
+				 hfile3.Close();
+				 delete hist;
+				 
                  double TT = time.CpuTime();	
                  cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
 	
