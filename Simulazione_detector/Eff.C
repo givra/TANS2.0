@@ -31,6 +31,8 @@ void Eff(){
 	float errmoltep[size] = {0,0,0,0,0,0,0,0,0,0};	// binomiale??
 	float eff[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le efficienze
 	float erreff[size] = {0,0,0,0,0,0,0,0,0,0};
+	float risol[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le risoluzioni
+	float errrisol[size] = {0,0,0,0,0,0,0,0,0,0};
 	float differenza = 0;
 	
 	// histo per efficienza
@@ -158,6 +160,8 @@ void Eff(){
 		eff[8] = histM42->GetEntries()/denEff.x8;
 		eff[9] = histM52->GetEntries()/denEff.x9;
 		
+	 
+		
 	// fit gaussiani
 		//TCanvas *cM3=new TCanvas("cM3","cM3",800,600);
 		TF1 *fM3 = new TF1("fM3","gaus",-0.06,0.06);
@@ -166,6 +170,12 @@ void Eff(){
 		//fM3->SetParameters(2,7);	// sigma
 		histM3->Fit(fM3,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM3 = abs(fM3->GetParameter(1));
+		double errmediaM3 = abs(fM3->GetParError(1));
+		double sigmaM3 = fM3->GetParameter(2);
+		double errsigmaM3 = fM3->GetParError(2);
+		risol[0] = sigmaM3/mediaM3;
+		errrisol[0] = sqrt(pow(errsigmaM3/mediaM3,2)+pow(sigmaM3*errmediaM3/(mediaM3*mediaM3),2));
 		//fM3->Draw("same");
 		//histM3->Draw("same");
 		
@@ -176,6 +186,12 @@ void Eff(){
 		//fM5->SetParameters(2,7);	// sigma
 		histM5->Fit(fM5,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM5 = abs(fM5->GetParameter(1));
+		double errmediaM5 = abs(fM5->GetParError(1));
+		double sigmaM5 = fM5->GetParameter(2);
+		double errsigmaM5 = fM5->GetParError(2);
+		risol[1] = sigmaM5/mediaM5;
+		errrisol[1] = sqrt(pow(errsigmaM5/mediaM5,2)+pow(sigmaM5*errmediaM5/(mediaM5*mediaM5),2));
 		//fM5->Draw("same");
 		//histM5->Draw("same");
 		
@@ -186,6 +202,12 @@ void Eff(){
 		//fM6->SetParameters(2,7);	// sigma
 		histM6->Fit(fM6,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM6 = abs(fM6->GetParameter(1));
+		double errmediaM6 = abs(fM6->GetParError(1));
+		double sigmaM6 = fM6->GetParameter(2);
+		double errsigmaM6 = fM6->GetParError(2);
+		risol[0] = sigmaM6/mediaM6;
+		errrisol[0] = sqrt(pow(errsigmaM6/mediaM6,2)+pow(sigmaM6*errmediaM6/(mediaM6*mediaM6),2));
 		//fM6->Draw("same");
 		//histM6->Draw("same");
 		
@@ -196,6 +218,12 @@ void Eff(){
 		//fM7->SetParameters(2,7);	// sigma
 		histM7->Fit(fM7,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM7 = abs(fM7->GetParameter(1));
+		double errmediaM7 = abs(fM7->GetParError(1));
+		double sigmaM7 = fM7->GetParameter(2);
+		double errsigmaM7 = fM7->GetParError(2);
+		risol[0] = sigmaM7/mediaM7;
+		errrisol[0] = sqrt(pow(errsigmaM7/mediaM7,2)+pow(sigmaM7*errmediaM7/(mediaM7*mediaM7),2));
 		//fM7->Draw("same");
 		//histM7->Draw("same");
 		
@@ -206,6 +234,12 @@ void Eff(){
 		//fM8->SetParameters(2,7);	// sigma
 		histM8->Fit(fM8,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM8 = abs(fM8->GetParameter(1));
+		double errmediaM8 = abs(fM8->GetParError(1));
+		double sigmaM8 = fM8->GetParameter(2);
+		double errsigmaM8 = fM8->GetParError(2);
+		risol[0] = sigmaM8/mediaM8;
+		errrisol[0] = sqrt(pow(errsigmaM8/mediaM8,2)+pow(sigmaM8*errmediaM8/(mediaM8*mediaM8),2));
 		//fM8->Draw("same");
 		//histM8->Draw("same");
 		
@@ -216,6 +250,12 @@ void Eff(){
 		//fM12->SetParameters(2,7);	// sigma
 		histM12->Fit(fM12,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM12 = abs(fM12->GetParameter(1));
+		double errmediaM12 = abs(fM12->GetParError(1));
+		double sigmaM12 = fM12->GetParameter(2);
+		double errsigmaM12 = fM12->GetParError(2);
+		risol[0] = sigmaM12/mediaM12;
+		errrisol[0] = sqrt(pow(errsigmaM12/mediaM12,2)+pow(sigmaM12*errmediaM12/(mediaM12*mediaM12),2));
 		//fM12->Draw("same");
 		//histM12->Draw("same");
 		
@@ -226,6 +266,12 @@ void Eff(){
 		//fM22->SetParameters(2,7);	// sigma
 		histM22->Fit(fM22,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM22 = abs(fM22->GetParameter(1));
+		double errmediaM22 = abs(fM22->GetParError(1));
+		double sigmaM22 = fM22->GetParameter(2);
+		double errsigmaM22 = fM22->GetParError(2);
+		risol[0] = sigmaM22/mediaM22;
+		errrisol[0] = sqrt(pow(errsigmaM22/mediaM22,2)+pow(sigmaM22*errmediaM22/(mediaM22*mediaM22),2));
 		//fM22->Draw("same");
 		//histM22->Draw("same");
 		
@@ -236,6 +282,12 @@ void Eff(){
 		//fM32->SetParameters(2,7);	// sigma
 		histM32->Fit(fM32,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM32 = abs(fM32->GetParameter(1));
+		double errmediaM32 = abs(fM32->GetParError(1));
+		double sigmaM32 = fM32->GetParameter(2);
+		double errsigmaM32 = fM32->GetParError(2);
+		risol[0] = sigmaM32/mediaM32;
+		errrisol[0] = sqrt(pow(errsigmaM32/mediaM32,2)+pow(sigmaM32*errmediaM32/(mediaM32*mediaM32),2));
 		//fM32->Draw("same");
 		//histM32->Draw("same");
 		
@@ -246,6 +298,12 @@ void Eff(){
 		//fM42->SetParameters(2,7);	// sigma
 		histM42->Fit(fM42,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM42 = abs(fM42->GetParameter(1));
+		double errmediaM42 = abs(fM42->GetParError(1));
+		double sigmaM42 = fM42->GetParameter(2);
+		double errsigmaM42 = fM42->GetParError(2);
+		risol[0] = sigmaM42/mediaM42;
+		errrisol[0] = sqrt(pow(errsigmaM42/mediaM42,2)+pow(sigmaM42*errmediaM42/(mediaM42*mediaM42),2));
 		//fM42->Draw("same");
 		//histM42->Draw("same");
 		
@@ -256,9 +314,16 @@ void Eff(){
 		//fM52->SetParameters(2,7);	// sigma
 		histM52->Fit(fM52,"NR+");
 		gStyle->SetOptFit(0);
+		double mediaM52 = abs(fM52->GetParameter(1));
+		double errmediaM52 = abs(fM52->GetParError(1));
+		double sigmaM52 = fM52->GetParameter(2);
+		double errsigmaM52 = fM52->GetParError(2);
+		risol[0] = sigmaM52/mediaM52;
+		errrisol[0] = sqrt(pow(errsigmaM52/mediaM52,2)+pow(sigmaM52*errmediaM52/(mediaM52*mediaM52),2));
 		//fM52->Draw("same");
 		//histM52->Draw("same");
 		
+// __________________________________________ efficienza _________________________________________
 		//TCanvas *c1=new TCanvas("c1","c1",800,600);
 		TGraphErrors *graphE= new TGraphErrors(size,moltep,eff,errmoltep,erreff);
 		graphE->SetMarkerSize(0.9);//https://root.cern.ch/doc/master/classTAttMarker.html
@@ -268,6 +333,15 @@ void Eff(){
 		graphE->GetYaxis()->SetTitle("efficiency[]");
 		//c1->cd();
 		graphE->Draw("ap");
+// ____________________________________________ risoluzione ________________________________________		
+		TGraphErrors *graphR= new TGraphErrors(size,moltep,risol,errmoltep,errrisol);
+		graphR->SetMarkerSize(0.9);//https://root.cern.ch/doc/master/classTAttMarker.html
+		graphR->SetMarkerStyle(43);
+		graphR->SetTitle("Resolution vs molteplicity");
+		graphR->GetXaxis()->SetTitle("molteplicity[]");
+		graphR->GetYaxis()->SetTitle("Resolution[]");
+		//c1->cd();
+		graphR->Draw("ap");
 		
 		TFile file1("efficienza.root", "recreate");
 		histM3->Write(); 
@@ -281,6 +355,7 @@ void Eff(){
         histM42->Write();
         histM52->Write();
         graphE->Write();
+		graphR->Write();
         file1.Close();
         delete histM3;
         delete histM5;
@@ -294,6 +369,8 @@ void Eff(){
         delete histM52;
         delete graphE;
         graphE = nullptr;
+		delete graphR;
+        graphR = nullptr;
 		
 		double TT = time.CpuTime();	
          cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  
