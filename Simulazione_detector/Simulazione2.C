@@ -36,7 +36,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		TTree *tree3 = new TTree("T3","TTree dati efficienza");
 		// tree3->SetDirectory(&hfile3);
         
-        int numeroeventi = 1000;
+        int numeroeventi = 10000;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto2",100);
         TClonesArray &hits1 = *ptrhits1;
@@ -77,9 +77,9 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
         TracciaMC tr; //traccia
         
         TH1F* hist;
-        int scegli = 2; //1->uniforme 2->kinem.root
+        bool scegli = 1; //0->uniforme 1->kinem.root
         
-		if(scegli==2){
+		if(scegli==1){
                TFile F("kinem.root");
                TH1F *disteta = (TH1F*)F.Get("heta2");
                disteta->SetDirectory(0);
@@ -182,9 +182,9 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		 do{		 		
 			 tr.SetOrigine(point.X,point.Y,point.Z); //setto come origine della traccia le coordinate del Vertice
 			 
-			 if(scegli==1) tr.SetEtaUni();
+			 if(scegli==0) tr.SetEtaUni();
 			 
-			 if(scegli==2){//distribuzione data del file kinem.root
+			 else {//distribuzione data del file kinem.root
         
                          //il numero di bins è 34
                          //il range va da -2.04 a 2.04
@@ -266,11 +266,6 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		 hfile2.Write();              
          hfile2.Close();
 		 
-		 cout  << " count3 " << count3 << endl;
-		 cout  << " count5 " << count5 << endl;
-		 cout  << " count42 " << count42 << endl;
-		 cout  << " count52 " << count52 << endl;
-		 
 		 denEff.x0 = count3;
 		 denEff.x1 = count5;
 		 denEff.x2 = count6;
@@ -284,7 +279,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		 tree3->Fill();
 		 
 
-			 cout << denEff.x0 << " " ;
+			// cout << denEff.x0 << " " ;
 		 
 		
 		 		 
