@@ -160,10 +160,25 @@ void Eff(){
 		eff[8] = histM42->GetEntries()/denEff.x8;
 		eff[9] = histM52->GetEntries()/denEff.x9;
 		
-	 
+		// errore binomiale
+		erreff[0] = pow((eff[0]*(1-eff[0])/denEff.x0),0.5);
+		erreff[1] = pow((eff[1]*(1-eff[1])/denEff.x1),0.5);
+		erreff[2] = pow((eff[2]*(1-eff[2])/denEff.x2),0.5);
+		erreff[3] = pow((eff[3]*(1-eff[3])/denEff.x3),0.5);
+		erreff[4] = pow((eff[4]*(1-eff[4])/denEff.x4),0.5);
+		erreff[5] = pow((eff[5]*(1-eff[5])/denEff.x5),0.5);
+		erreff[6] = pow((eff[6]*(1-eff[6])/denEff.x6),0.5);
+		erreff[7] = pow((eff[7]*(1-eff[7])/denEff.x7),0.5);
+		erreff[8] = pow((eff[8]*(1-eff[8])/denEff.x8),0.5);
+		erreff[9] = pow((eff[9]*(1-eff[9])/denEff.x9),0.5);
+		
+		// binomiale anche per molteplicità????
+		
 		
 	// fit gaussiani
 		//TCanvas *cM3=new TCanvas("cM3","cM3",800,600);
+		//cM3->SetFillColor(0);
+		//cM3->cd();
 		TF1 *fM3 = new TF1("fM3","gaus",-0.06,0.06);
 		fM3->SetLineColor(kRed);
 		//fM3->SetParameters(1,60);	// media
@@ -176,8 +191,8 @@ void Eff(){
 		double errsigmaM3 = fM3->GetParError(2);
 		risol[0] = sigmaM3/mediaM3;
 		errrisol[0] = sqrt(pow(errsigmaM3/mediaM3,2)+pow(sigmaM3*errmediaM3/(mediaM3*mediaM3),2));
-		//fM3->Draw("same");
-		//histM3->Draw("same");
+		fM3->Draw("same");
+		histM3->DrawCopy("same");
 		
 		//TCanvas *cM5=new TCanvas("cM5","cM5",800,600);
 		TF1 *fM5 = new TF1("fM5","gaus",-0.06,0.06);
@@ -326,8 +341,8 @@ void Eff(){
 // __________________________________________ efficienza _________________________________________
 		//TCanvas *c1=new TCanvas("c1","c1",800,600);
 		TGraphErrors *graphE= new TGraphErrors(size,moltep,eff,errmoltep,erreff);
-		graphE->SetMarkerSize(0.9);//https://root.cern.ch/doc/master/classTAttMarker.html
-		graphE->SetMarkerStyle(43);
+		graphE->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
+		graphE->SetMarkerStyle(33);
 		graphE->SetTitle("Efficiency vs molteplicity");
 		graphE->GetXaxis()->SetTitle("molteplicity[]");
 		graphE->GetYaxis()->SetTitle("efficiency[]");
@@ -335,8 +350,8 @@ void Eff(){
 		graphE->Draw("ap");
 // ____________________________________________ risoluzione ________________________________________		
 		TGraphErrors *graphR= new TGraphErrors(size,moltep,risol,errmoltep,errrisol);
-		graphR->SetMarkerSize(0.9);//https://root.cern.ch/doc/master/classTAttMarker.html
-		graphR->SetMarkerStyle(43);
+		graphR->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
+		graphR->SetMarkerStyle(33);
 		graphR->SetTitle("Resolution vs molteplicity");
 		graphR->GetXaxis()->SetTitle("molteplicity[]");
 		graphR->GetYaxis()->SetTitle("Resolution[]");
