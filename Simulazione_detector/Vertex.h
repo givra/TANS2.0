@@ -15,9 +15,11 @@ public:
   Vertex(); //costruttore di default, x,y,z=0 e molt=1
   virtual ~Vertex();
   
-  void NewVertex(); //coordinate gaussiane , distribuzione uniforme per molteplicità tra 1 e 80
- 
-  void SetZUniform(); //impostare Z con distribuzione uniforme tra -20 e 20
+  void NewVertex(); //coordinate gaussiane 
+  
+  void SetMolt(float moltepl);
+  void SetMoltUniform(); //distribuzione uniforme per molteplicità tra 1 e 80 
+  void SetZUniform(); //impostare Z con distribuzione uniforme tra -20 e 20 //SERVE??
   
   
   //vector<float> GetCoordinate();

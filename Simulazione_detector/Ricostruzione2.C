@@ -62,14 +62,17 @@ void Ricostruzione2(){
         //definizione struct
         typedef struct {
            float X,Y,Z;
-           int mult;} VTX;
-        static VTX point;
-		static VTX pointRec;
+           int mult;} VTX1;
+        static VTX1 point;
+        
+        typedef struct {
+           float Z;} VTX;
+	static VTX pointRec;
 		
-		typedef struct{
-			float x0,x1,x2,x3,x4,x5,x6,x7,x8,x9;		// Z simulate con un certo valore di moltep, sarà denominatore dell'efficienza
-			} vett;
-		static vett denEff;
+	typedef struct{
+		float x0,x1,x2,x3,x4,x5,x6,x7,x8,x9;		// Z simulate con un certo valore di moltep, sarà denominatore dell'efficienza
+		} vett;
+	static vett denEff;
   
         //apertura file di input
         TFile hfile2("htree2.root");
@@ -87,7 +90,7 @@ void Ricostruzione2(){
 		
 		TFile hfile4("htree4.root", "RECREATE");
 		TTree *tree4 = new TTree("T4","TTree dati efficienza");
-		tree4->Branch("Zrec",&pointRec.X,"X/F:Y:Z:mult/I");
+		tree4->Branch("Zrec",&pointRec.Z,"Z/F");
 		
 		
 		
@@ -115,7 +118,8 @@ void Ricostruzione2(){
         //b2->SetAddress(&hits1); //relativo al primo layer
         b3->SetAddress(&hits2);
         b4->SetAddress(&hits3);
-		branch3->SetAddress(&denEff.x0);
+        
+	branch3->SetAddress(&denEff.x0);
   
         //arrays in cui salvo le buone combinazioni di hits
     /*    TClonesArray *hitsgood2 = new TClonesArray("Punto2",100);
@@ -132,11 +136,11 @@ void Ricostruzione2(){
 		
 	// loop sugli ingressi nel TTree
         for(int ev=0;ev<numeroeventi;ev++){
-                
+                 if(ev%50000==0) cout<<"siamo arrivati al numero "<<ev<<endl; //controllo su come procede la simulazione
                 iter = 0;
-				pointRec.X = 0;
-				pointRec.Y = 0;
-				pointRec.mult = 0;
+				//pointRec.X = 0;
+				//pointRec.Y = 0;
+				//pointRec.mult = 0;
 				
 				tree3->GetEvent(ev);
                 tree2->GetEvent(ev);
@@ -298,7 +302,8 @@ void Ricostruzione2(){
 			
 		
 		}		// fine ciclo eventi
-		
+		hits2->Clear();
+		hits3->Clear();
 		// # di Z ricostruite con una certa moltep su quelle simulate
 	/*	eff[0] = histM3->GetEntries()/denEff.x0;		
 		eff[1] = histM5->GetEntries()/denEff.x1;
@@ -401,6 +406,12 @@ void Ricostruzione2(){
 		delete hist2;
 	
         hfile2.Close();
+        
+        hfile3.Write();              
+        hfile3.Close();
+        
+        hfile4.Write();              
+        hfile4.Close();
 			
 	//creo grafico Ztrue-Zrec, avrò numeroeventi dati
 /*	TCanvas *c1=new TCanvas("c1","c1",800,600);
@@ -432,8 +443,10 @@ void Ricostruzione2(){
 	 histM42->Write();
 	 histM52->Write();
 	 graphE->Write();*/
+	 
 	 file1.Close();
-	 delete hist1;
+	// delete hist1;
+	
 	/* delete histM3;
 	 delete histM5;
 	 delete histM6;
@@ -447,8 +460,7 @@ void Ricostruzione2(){
 	 delete graphE;
 	 graphE = nullptr;
 	*/ 
-	 hfile4.Write();              
-     hfile4.Close();
+	 
 				
          double TT = time.CpuTime();	
          cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  

@@ -36,22 +36,26 @@ void Eff(){
 	float differenza = 0;
 	
 	// histo per efficienza
-	static TH1D* histM3 = new TH1D("hM3","2.5 < molteplicità < 3.5", 150, -0.15, 0.15);// fatto per molteplicità 3
-	static TH1D* histM5 = new TH1D("hM5","4.5 < molteplicità < 5.5", 150, -0.15, 0.15);
-	static TH1D* histM6 = new TH1D("hM6","5.5 < molteplicità < 6.5", 150, -0.15, 0.15);
-	static TH1D* histM7 = new TH1D("hM7","6.5 < molteplicità < 7.5", 150, -0.15, 0.15);
-	static TH1D* histM8 = new TH1D("hM8","7.5 < molteplicità < 8.5", 150, -0.15, 0.15);
-	static TH1D* histM12 = new TH1D("hM12","11.5 < molteplicità < 12.5", 250, -0.15, 0.15);
-	static TH1D* histM22 = new TH1D("hM22","21.5 < molteplicità < 22.5", 250, -1.5, 1.5);
-	static TH1D* histM32 = new TH1D("hM32","31.5 < molteplicità < 32.5", 250, -1.5, 1.5);
-	static TH1D* histM42 = new TH1D("hM42","41.5 < molteplicità < 42.5", 250, -1.5, 1.5);
-	static TH1D* histM52 = new TH1D("hM52","51.5 < molteplicità < 52.5", 250, -1.5, 1.5);
+	static TH1D* histM3 = new TH1D("hM3","2.5 < molteplicità < 3.5", 15, -0.05, 0.05);// fatto per molteplicità 3
+	static TH1D* histM5 = new TH1D("hM5","4.5 < molteplicità < 5.5", 25, -0.05, 0.05);
+	static TH1D* histM6 = new TH1D("hM6","5.5 < molteplicità < 6.5", 25, -0.05, 0.05);
+	static TH1D* histM7 = new TH1D("hM7","6.5 < molteplicità < 7.5", 25, -0.05, 0.05);
+	static TH1D* histM8 = new TH1D("hM8","7.5 < molteplicità < 8.5", 25, -0.05, 0.05);
+	static TH1D* histM12 = new TH1D("hM12","11.5 < molteplicità < 12.5", 50, -0.05, 0.05);
+	static TH1D* histM22 = new TH1D("hM22","21.5 < molteplicità < 22.5", 50, -0.04, 0.04);
+	static TH1D* histM32 = new TH1D("hM32","31.5 < molteplicità < 32.5", 50, -0.04, 0.04);
+	static TH1D* histM42 = new TH1D("hM42","41.5 < molteplicità < 42.5", 50, -0.04, 0.04);
+	static TH1D* histM52 = new TH1D("hM52","51.5 < molteplicità < 52.5", 50, -0.04, 0.04);
 	
 	
-	typedef struct {
+	  //definizione struct
+        typedef struct {
            float X,Y,Z;
-           int mult;} VTX;
-    static VTX point;
+           int mult;} VTX1;
+        static VTX1 point;
+        
+        typedef struct {
+           float Z;} VTX;
 	static VTX pointRec;
 	
 	typedef struct{
@@ -72,7 +76,7 @@ void Eff(){
 	TFile hfile4("htree4.root");
 	TTree *tree4 = (TTree*)hfile4.Get("T4");
 	TBranch *branch4 = tree4->GetBranch("Zrec");
-    branch4->SetAddress(&pointRec.X);
+    branch4->SetAddress(&pointRec.Z);
 	
 	numeroeventi = tree2->GetEntries(); //acquisico informazione sul numero di eventi nel mio detector
 	
@@ -84,7 +88,7 @@ void Eff(){
     for(int ev=0;ev<numeroeventi;ev++){
                 
 		tree3->GetEvent(ev);
-        tree2->GetEvent(ev);
+                tree2->GetEvent(ev);
 		tree4->GetEvent(ev);
 		
 		Zsim[ev] = point.Z; 
@@ -179,7 +183,7 @@ void Eff(){
 		//TCanvas *cM3=new TCanvas("cM3","cM3",800,600);
 		//cM3->SetFillColor(0);
 		//cM3->cd();
-		TF1 *fM3 = new TF1("fM3","gaus",-0.06,0.06);
+		TF1 *fM3 = new TF1("fM3","gaus",-0.03,0.03);
 		fM3->SetLineColor(kRed);
 		//fM3->SetParameters(1,60);	// media
 		//fM3->SetParameters(2,7);	// sigma
@@ -195,7 +199,7 @@ void Eff(){
 		histM3->DrawCopy("same");
 		
 		//TCanvas *cM5=new TCanvas("cM5","cM5",800,600);
-		TF1 *fM5 = new TF1("fM5","gaus",-0.06,0.06);
+		TF1 *fM5 = new TF1("fM5","gaus",-0.02,0.02);
 		fM5->SetLineColor(kRed);
 		//fM5->SetParameters(1,60);	// media
 		//fM5->SetParameters(2,7);	// sigma
@@ -211,7 +215,7 @@ void Eff(){
 		//histM5->Draw("same");
 		
 		//TCanvas *M6=new TCanvas("M6","M6",800,600);
-		TF1 *fM6 = new TF1("fM6","gaus",-0.07,0.07);
+		TF1 *fM6 = new TF1("fM6","gaus",-0.02,0.02);
 		fM6->SetLineColor(kRed);
 		//fM6->SetParameters(1,60);	// media
 		//fM6->SetParameters(2,7);	// sigma
@@ -221,13 +225,13 @@ void Eff(){
 		double errmediaM6 = abs(fM6->GetParError(1));
 		double sigmaM6 = fM6->GetParameter(2);
 		double errsigmaM6 = fM6->GetParError(2);
-		risol[0] = sigmaM6/mediaM6;
-		errrisol[0] = sqrt(pow(errsigmaM6/mediaM6,2)+pow(sigmaM6*errmediaM6/(mediaM6*mediaM6),2));
+		risol[2] = sigmaM6/mediaM6;
+		errrisol[2] = sqrt(pow(errsigmaM6/mediaM6,2)+pow(sigmaM6*errmediaM6/(mediaM6*mediaM6),2));
 		//fM6->Draw("same");
 		//histM6->Draw("same");
 		
 		//TCanvas *M7=new TCanvas("M7","M7",800,600);
-		TF1 *fM7 = new TF1("fM7","gaus",-0.07,0.07);
+		TF1 *fM7 = new TF1("fM7","gaus",-0.01,0.01);
 		fM7->SetLineColor(kRed);
 		//fM7->SetParameters(1,60);	// media
 		//fM7->SetParameters(2,7);	// sigma
@@ -237,13 +241,14 @@ void Eff(){
 		double errmediaM7 = abs(fM7->GetParError(1));
 		double sigmaM7 = fM7->GetParameter(2);
 		double errsigmaM7 = fM7->GetParError(2);
-		risol[0] = sigmaM7/mediaM7;
-		errrisol[0] = sqrt(pow(errsigmaM7/mediaM7,2)+pow(sigmaM7*errmediaM7/(mediaM7*mediaM7),2));
+		risol[3] = sigmaM7/mediaM7;
+		errrisol[3] = sqrt(pow(errsigmaM7/mediaM7,2)+pow(sigmaM7*errmediaM7/(mediaM7*mediaM7),2));
 		//fM7->Draw("same");
 		//histM7->Draw("same");
+		cout<<"sigma "<<sigmaM7<<" media "<<mediaM7<<" risol "<<risol[3]<<endl;
 		
 		//TCanvas *M8=new TCanvas("M8","M8",800,600);
-		TF1 *fM8 = new TF1("fM8","gaus",-0.05,0.05);
+		TF1 *fM8 = new TF1("fM8","gaus",-0.015,0.015);
 		fM8->SetLineColor(kRed);
 		//fM8->SetParameters(1,60);	// media
 		//fM8->SetParameters(2,7);	// sigma
@@ -253,13 +258,13 @@ void Eff(){
 		double errmediaM8 = abs(fM8->GetParError(1));
 		double sigmaM8 = fM8->GetParameter(2);
 		double errsigmaM8 = fM8->GetParError(2);
-		risol[0] = sigmaM8/mediaM8;
-		errrisol[0] = sqrt(pow(errsigmaM8/mediaM8,2)+pow(sigmaM8*errmediaM8/(mediaM8*mediaM8),2));
+		risol[4] = sigmaM8/mediaM8;
+		errrisol[4] = sqrt(pow(errsigmaM8/mediaM8,2)+pow(sigmaM8*errmediaM8/(mediaM8*mediaM8),2));
 		//fM8->Draw("same");
 		//histM8->Draw("same");
 		
 		//TCanvas *M12=new TCanvas("M12","M12",800,600);
-		TF1 *fM12 = new TF1("fM12","gaus",-0.05,0.05);
+		TF1 *fM12 = new TF1("fM12","gaus",-0.015,0.015);
 		fM12->SetLineColor(kRed);
 		//fM12->SetParameters(1,60);	// media
 		//fM12->SetParameters(2,7);	// sigma
@@ -269,13 +274,13 @@ void Eff(){
 		double errmediaM12 = abs(fM12->GetParError(1));
 		double sigmaM12 = fM12->GetParameter(2);
 		double errsigmaM12 = fM12->GetParError(2);
-		risol[0] = sigmaM12/mediaM12;
-		errrisol[0] = sqrt(pow(errsigmaM12/mediaM12,2)+pow(sigmaM12*errmediaM12/(mediaM12*mediaM12),2));
+		risol[5] = sigmaM12/mediaM12;
+		errrisol[5] = sqrt(pow(errsigmaM12/mediaM12,2)+pow(sigmaM12*errmediaM12/(mediaM12*mediaM12),2));
 		//fM12->Draw("same");
 		//histM12->Draw("same");
 		
 		//TCanvas *M22=new TCanvas("M22","M22",800,600);
-		TF1 *fM22 = new TF1("fM22","gaus",-0.04,0.04);
+		TF1 *fM22 = new TF1("fM22","gaus",-0.015,0.015);
 		fM22->SetLineColor(kRed);
 		//fM22->SetParameters(1,60);	// media
 		//fM22->SetParameters(2,7);	// sigma
@@ -285,13 +290,13 @@ void Eff(){
 		double errmediaM22 = abs(fM22->GetParError(1));
 		double sigmaM22 = fM22->GetParameter(2);
 		double errsigmaM22 = fM22->GetParError(2);
-		risol[0] = sigmaM22/mediaM22;
-		errrisol[0] = sqrt(pow(errsigmaM22/mediaM22,2)+pow(sigmaM22*errmediaM22/(mediaM22*mediaM22),2));
+		risol[6] = sigmaM22/mediaM22;
+		errrisol[6] = sqrt(pow(errsigmaM22/mediaM22,2)+pow(sigmaM22*errmediaM22/(mediaM22*mediaM22),2));
 		//fM22->Draw("same");
 		//histM22->Draw("same");
 		
 		//TCanvas *M32=new TCanvas("M32","M32",800,600);
-		TF1 *fM32 = new TF1("fM32","gaus",-0.04,0.04);
+		TF1 *fM32 = new TF1("fM32","gaus",-0.01,0.01);
 		fM32->SetLineColor(kRed);
 		//fM32->SetParameters(1,60);	// media
 		//fM32->SetParameters(2,7);	// sigma
@@ -301,13 +306,13 @@ void Eff(){
 		double errmediaM32 = abs(fM32->GetParError(1));
 		double sigmaM32 = fM32->GetParameter(2);
 		double errsigmaM32 = fM32->GetParError(2);
-		risol[0] = sigmaM32/mediaM32;
-		errrisol[0] = sqrt(pow(errsigmaM32/mediaM32,2)+pow(sigmaM32*errmediaM32/(mediaM32*mediaM32),2));
+		risol[7] = sigmaM32/mediaM32;
+		errrisol[7] = sqrt(pow(errsigmaM32/mediaM32,2)+pow(sigmaM32*errmediaM32/(mediaM32*mediaM32),2));
 		//fM32->Draw("same");
 		//histM32->Draw("same");
 		
 		//TCanvas *M42=new TCanvas("M42","M42",800,600);
-		TF1 *fM42 = new TF1("fM42","gaus",-0.03,0.03);
+		TF1 *fM42 = new TF1("fM42","gaus",-0.01,0.01);
 		fM42->SetLineColor(kRed);
 		//fM42->SetParameters(1,60);	// media
 		//fM42->SetParameters(2,7);	// sigma
@@ -317,13 +322,13 @@ void Eff(){
 		double errmediaM42 = abs(fM42->GetParError(1));
 		double sigmaM42 = fM42->GetParameter(2);
 		double errsigmaM42 = fM42->GetParError(2);
-		risol[0] = sigmaM42/mediaM42;
-		errrisol[0] = sqrt(pow(errsigmaM42/mediaM42,2)+pow(sigmaM42*errmediaM42/(mediaM42*mediaM42),2));
+		risol[8] = sigmaM42/mediaM42;
+		errrisol[8] = sqrt(pow(errsigmaM42/mediaM42,2)+pow(sigmaM42*errmediaM42/(mediaM42*mediaM42),2));
 		//fM42->Draw("same");
 		//histM42->Draw("same");
 		
 		//TCanvas *M52=new TCanvas("M52","M52",800,600);
-		TF1 *fM52 = new TF1("fM52","gaus",-0.03,0.03);
+		TF1 *fM52 = new TF1("fM52","gaus",-0.01,0.005);
 		fM52->SetLineColor(kRed);
 		//fM52->SetParameters(1,60);	// media
 		//fM52->SetParameters(2,7);	// sigma
@@ -333,10 +338,12 @@ void Eff(){
 		double errmediaM52 = abs(fM52->GetParError(1));
 		double sigmaM52 = fM52->GetParameter(2);
 		double errsigmaM52 = fM52->GetParError(2);
-		risol[0] = sigmaM52/mediaM52;
-		errrisol[0] = sqrt(pow(errsigmaM52/mediaM52,2)+pow(sigmaM52*errmediaM52/(mediaM52*mediaM52),2));
+		risol[9] = sigmaM52/mediaM52;
+		errrisol[9] = sqrt(pow(errsigmaM52/mediaM52,2)+pow(sigmaM52*errmediaM52/(mediaM52*mediaM52),2));
 		//fM52->Draw("same");
 		//histM52->Draw("same");
+		
+		for(int l=0; l<=9; l++) cout<<risol[l]<<endl;
 		
 // __________________________________________ efficienza _________________________________________
 		//TCanvas *c1=new TCanvas("c1","c1",800,600);
@@ -382,10 +389,10 @@ void Eff(){
         delete histM32;
         delete histM42;
         delete histM52;
-        delete graphE;
-        graphE = nullptr;
-		delete graphR;
-        graphR = nullptr;
+       // delete graphE;
+        //graphE = nullptr;
+	//	delete graphR;
+       // graphR = nullptr;
 		
 		double TT = time.CpuTime();	
          cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  

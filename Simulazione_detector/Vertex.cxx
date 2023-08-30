@@ -26,15 +26,22 @@ X = gRandom->Gaus(0,0.01); //coordinata x
 Y = gRandom->Gaus(0,0.01); //coordinata y
 Z = gRandom->Gaus(0,5.3); //coordinata z
 
-moltep = 1 + (gRandom->Rndm()*80)/1;
+//moltep = 1 + (gRandom->Rndm()*80)/1;
 //moltep = 45;
 }
  
+void Vertex::SetMolt(float moltepl){
 
+ moltep = moltepl;
+}
+void Vertex::SetMoltUniform(){
+  
+  moltep = 1 + (gRandom->Rndm()*80)/1;
+}
 
 void Vertex::SetZUniform(){
 
-Z = (gRandom->Rndm()*40) - 20;
+  Z = (gRandom->Rndm()*40) - 20;
 }
 
 

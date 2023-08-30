@@ -36,7 +36,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		TTree *tree3 = new TTree("T3","TTree dati efficienza");
 		// tree3->SetDirectory(&hfile3);
         
-        int numeroeventi = 10000;
+        int numeroeventi = 1000000;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto2",100);
         TClonesArray &hits1 = *ptrhits1;
@@ -76,10 +76,37 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
         Multis catter; //multiple scattering
         TracciaMC tr; //traccia
         
-        TH1F* hist;
-        bool scegli = 1; //0->uniforme 1->kinem.root
+        //Scelta della distribuzione della molteplicità
+        TH1F* hist1;
+        bool scegli1 = 1; //distribuzione di eta 0->uniforme 1->kinem.root
         
-		if(scegli==1){
+		if(scegli1==1){
+               TFile F("kinem.root");
+               TH1F *disteta = (TH1F*)F.Get("hm");
+               disteta->SetDirectory(0);
+               disteta->SetMinimum(0);
+               F.Close();
+               TAxis *xa=disteta->GetXaxis();
+               float step = xa->GetBinWidth(1);
+               int b1=xa->FindBin(2.6);
+               int b2=xa->FindBin(70.4821);
+ 
+               float xlow=xa->GetBinLowEdge(b1);
+               float xhig=xa->GetBinUpEdge(b2);
+               int nobins=b2-b1+1;
+               float step2 = (xhig-xlow)/nobins;
+  
+               hist1 = new TH1F("hist1","molteplicity distribution",nobins,xlow,xhig);
+               int j=1;
+               for(int i=b1;i<=b2+1;i++)hist1->SetBinContent(j++,disteta->GetBinContent(i));
+               
+          }
+        
+        //Scelta della distribuzione di Eta
+        TH1F* hist2;
+        bool scegli2 = 1; //distribuzione di eta 0->uniforme 1->kinem.root
+        
+		if(scegli2==1){
                TFile F("kinem.root");
                TH1F *disteta = (TH1F*)F.Get("heta2");
                disteta->SetDirectory(0);
@@ -95,9 +122,9 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
                int nobins=b2-b1+1;
                float step2 = (xhig-xlow)/nobins;
   
-               hist = new TH1F("hist","#eta distribution 2",nobins,xlow,xhig);
+               hist2 = new TH1F("hist2","#eta distribution 2",nobins,xlow,xhig);
                int j=1;
-               for(int i=b1;i<=b2+1;i++)hist->SetBinContent(j++,disteta->GetBinContent(i));
+               for(int i=b1;i<=b2+1;i++)hist2->SetBinContent(j++,disteta->GetBinContent(i));
                
           }
         
@@ -106,7 +133,8 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
         int count=0;
         
         float u1, u2;
-        int fmax = 15344;
+        int fmax1 = 27201;
+        int fmax2 = 15344;
         float Xt, Yt, f;
 		
 		float count3 = 0;
@@ -122,9 +150,28 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		
               
 	for(int evento = 0; evento < numeroeventi; evento++){
-	         //if(evento%50000==0) cout<<"siamo arrivati al numero "<<evento<<endl; //controllo su come procede la simulazione
+	         if(evento%50000==0) cout<<"siamo arrivati al numero "<<evento<<endl; //controllo su come procede la simulazione
 		 vertice0.NewVertex(); //estraggo nuove coordinate casuali del vertice
-		 	
+		 //calcolo la molteplicità del vertice in base alla mia scelta	
+		 if(scegli1==0) vertice0.SetMoltUniform();
+			 
+			 else {//distribuzione data del file kinem.root
+        
+                         //il numero di bins è 141
+                         //il range va da 2.6 a 70.4821
+                         //Xmax è 1 e Ymax è 27201
+         
+                         do{  
+                             u1 = gRandom->Rndm();
+                             u2 = gRandom->Rndm();
+  
+                             Yt = fmax1*u2;
+                             Xt = (141*u1)/1;
+                             f = hist1->GetBinContent(Xt);}
+                         while(f<=Yt);
+       
+                         vertice0.SetMolt(((67.9821)*(Xt-1)/(141))+2.5);  //-((4.08)/(2*34)));
+                         }
 		 //salvo informazioni nell'oggetto point	 
 		 point.mult = vertice0.GetMolteplicity();
 		 
@@ -182,7 +229,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		 do{		 		
 			 tr.SetOrigine(point.X,point.Y,point.Z); //setto come origine della traccia le coordinate del Vertice
 			 
-			 if(scegli==0) tr.SetEtaUni();
+			 if(scegli2==0) tr.SetEtaUni();
 			 
 			 else {//distribuzione data del file kinem.root
         
@@ -194,12 +241,12 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
                              u1 = gRandom->Rndm();
                              u2 = gRandom->Rndm();
   
-                             Yt = fmax*u2;
+                             Yt = fmax2*u2;
                              Xt = (34*u1)/1;
-                             f = hist->GetBinContent(Xt);}
+                             f = hist2->GetBinContent(Xt);}
                          while(f<=Yt);
        
-                         tr.SetEta(((4.08)*(Xt)/(34))-2.04-((4.08)/(2*34)));
+                         tr.SetEta(((4.08)*(Xt-1)/(34))-2.04); //-((4.08)/(2*34)));
                          }
                         
 			 //imposto la direzione iniziale della particella, estratta casualmente			 
@@ -286,8 +333,10 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		 //salvo il tree sul file e lo chiudo
                  
                  hfile3.Write();
-				 hfile3.Close();
-				 delete hist;
+		 hfile3.Close();
+		 
+		 delete hist1;
+		 delete hist2;
 				 
                  double TT = time.CpuTime();	
                  cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
