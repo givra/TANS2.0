@@ -183,7 +183,7 @@ void Eff(){
 		//TCanvas *cM3=new TCanvas("cM3","cM3",800,600);
 		//cM3->SetFillColor(0);
 		//cM3->cd();
-		TF1 *fM3 = new TF1("fM3","gaus",-0.03,0.03);
+		TF1 *fM3 = new TF1("fM3","gaus",-0.05,0.05);
 		fM3->SetLineColor(kRed);
 		//fM3->SetParameters(1,60);	// media
 		//fM3->SetParameters(2,7);	// sigma
@@ -199,7 +199,7 @@ void Eff(){
 		histM3->DrawCopy("same");
 		
 		//TCanvas *cM5=new TCanvas("cM5","cM5",800,600);
-		TF1 *fM5 = new TF1("fM5","gaus",-0.02,0.02);
+		TF1 *fM5 = new TF1("fM5","gaus",-0.04,0.04);
 		fM5->SetLineColor(kRed);
 		//fM5->SetParameters(1,60);	// media
 		//fM5->SetParameters(2,7);	// sigma
@@ -215,7 +215,7 @@ void Eff(){
 		//histM5->Draw("same");
 		
 		//TCanvas *M6=new TCanvas("M6","M6",800,600);
-		TF1 *fM6 = new TF1("fM6","gaus",-0.02,0.02);
+		TF1 *fM6 = new TF1("fM6","gaus",-0.04,0.04);
 		fM6->SetLineColor(kRed);
 		//fM6->SetParameters(1,60);	// media
 		//fM6->SetParameters(2,7);	// sigma
@@ -231,7 +231,7 @@ void Eff(){
 		//histM6->Draw("same");
 		
 		//TCanvas *M7=new TCanvas("M7","M7",800,600);
-		TF1 *fM7 = new TF1("fM7","gaus",-0.01,0.01);
+		TF1 *fM7 = new TF1("fM7","gaus",-0.04,0.04);
 		fM7->SetLineColor(kRed);
 		//fM7->SetParameters(1,60);	// media
 		//fM7->SetParameters(2,7);	// sigma
@@ -248,7 +248,7 @@ void Eff(){
 		cout<<"sigma "<<sigmaM7<<" media "<<mediaM7<<" risol "<<risol[3]<<endl;
 		
 		//TCanvas *M8=new TCanvas("M8","M8",800,600);
-		TF1 *fM8 = new TF1("fM8","gaus",-0.015,0.015);
+		TF1 *fM8 = new TF1("fM8","gaus",-0.04,0.04);
 		fM8->SetLineColor(kRed);
 		//fM8->SetParameters(1,60);	// media
 		//fM8->SetParameters(2,7);	// sigma
@@ -264,7 +264,7 @@ void Eff(){
 		//histM8->Draw("same");
 		
 		//TCanvas *M12=new TCanvas("M12","M12",800,600);
-		TF1 *fM12 = new TF1("fM12","gaus",-0.015,0.015);
+		TF1 *fM12 = new TF1("fM12","gaus",-0.03,0.03);
 		fM12->SetLineColor(kRed);
 		//fM12->SetParameters(1,60);	// media
 		//fM12->SetParameters(2,7);	// sigma
@@ -280,7 +280,7 @@ void Eff(){
 		//histM12->Draw("same");
 		
 		//TCanvas *M22=new TCanvas("M22","M22",800,600);
-		TF1 *fM22 = new TF1("fM22","gaus",-0.015,0.015);
+		TF1 *fM22 = new TF1("fM22","gaus",-0.025,0.025);
 		fM22->SetLineColor(kRed);
 		//fM22->SetParameters(1,60);	// media
 		//fM22->SetParameters(2,7);	// sigma
@@ -296,7 +296,7 @@ void Eff(){
 		//histM22->Draw("same");
 		
 		//TCanvas *M32=new TCanvas("M32","M32",800,600);
-		TF1 *fM32 = new TF1("fM32","gaus",-0.01,0.01);
+		TF1 *fM32 = new TF1("fM32","gaus",-0.02,0.02);
 		fM32->SetLineColor(kRed);
 		//fM32->SetParameters(1,60);	// media
 		//fM32->SetParameters(2,7);	// sigma
@@ -312,7 +312,7 @@ void Eff(){
 		//histM32->Draw("same");
 		
 		//TCanvas *M42=new TCanvas("M42","M42",800,600);
-		TF1 *fM42 = new TF1("fM42","gaus",-0.01,0.01);
+		TF1 *fM42 = new TF1("fM42","gaus",-0.015,0.015);
 		fM42->SetLineColor(kRed);
 		//fM42->SetParameters(1,60);	// media
 		//fM42->SetParameters(2,7);	// sigma
@@ -328,7 +328,7 @@ void Eff(){
 		//histM42->Draw("same");
 		
 		//TCanvas *M52=new TCanvas("M52","M52",800,600);
-		TF1 *fM52 = new TF1("fM52","gaus",-0.01,0.005);
+		TF1 *fM52 = new TF1("fM52","gaus",-0.015,0.015);
 		fM52->SetLineColor(kRed);
 		//fM52->SetParameters(1,60);	// media
 		//fM52->SetParameters(2,7);	// sigma
