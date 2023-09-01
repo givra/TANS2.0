@@ -37,7 +37,7 @@ void Ricostruzione2(){
 	static TH1D* histM52 = new TH1D("hM52","51.5 < molteplicità < 52.5", 250, -1.5, 1.5);
 */	
    
-	static int iter; //iteratore
+	//static int iter; //iteratore
 	float deltaPhi;
 	
     float Z3, Z2, TanTheta;
@@ -57,8 +57,7 @@ void Ricostruzione2(){
 	float errmoltep[size] = {0,0,0,0,0,0,0,0,0,0};	// binomiale??
 	float eff[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le efficienze
 	float erreff[size] = {0,0,0,0,0,0,0,0,0,0};
-	
-	
+		
         //definizione struct
         typedef struct {
            float X,Y,Z;
@@ -84,31 +83,28 @@ void Ricostruzione2(){
         TBranch *b3=tree2->GetBranch("HitsSecondo");
         TBranch *b4=tree2->GetBranch("HitsTerzo");
 		
-		TFile hfile3("htree3.root");
-		TTree *tree3 = (TTree*)hfile3.Get("T3");
-		TBranch *branch3 = tree3->GetBranch("denEff");
+	TFile hfile3("htree3.root");
+	TTree *tree3 = (TTree*)hfile3.Get("T3");
+	TBranch *branch3 = tree3->GetBranch("denEff");
 		
-		TFile hfile4("htree4.root", "RECREATE");
-		TTree *tree4 = new TTree("T4","TTree dati efficienza");
-		tree4->Branch("Zrec",&pointRec.Z,"Z/F");
-		
-		
-		
+	TFile hfile4("htree4.root", "RECREATE");
+	TTree *tree4 = new TTree("T4","TTree dati efficienza");
+	tree4->Branch("Zrec",&pointRec.Z,"Z/F");
+				
         numeroeventi = tree2->GetEntries(); //acquisico informazione sul numero di eventi nel mio detector
         	
 	//arrays contenenti Z ricostruite e simulate
   //float Zrec[numeroeventi];
         float Zsim[numeroeventi];	
 		
-				
-  
+				 
         //dichiarazione TClonesArray
         //TClonesArray *hits1 = new TClonesArray("Punto2",numeroeventi); //per la ricostruzione non usiamo il primo layer
         TClonesArray *hits2 = new TClonesArray("Punto2",100);
-        TClonesArray &ptrhits2 = *hits2; 
+        //TClonesArray &ptrhits2 = *hits2; 
       
         TClonesArray *hits3 = new TClonesArray("Punto2",100);
-        TClonesArray &ptrhits3 = *hits3;
+       // TClonesArray &ptrhits3 = *hits3;
 		
 		//float denEff[10];
   
@@ -132,12 +128,14 @@ void Ricostruzione2(){
         vector<float> Zgood2;
         vector<float> Zgood3;
 		
-		
+	int percento = 0;	
 		
 	// loop sugli ingressi nel TTree
         for(int ev=0;ev<numeroeventi;ev++){
-                 if(ev%50000==0) cout<<"siamo arrivati al numero "<<ev<<endl; //controllo su come procede la simulazione
-                iter = 0;
+              if((evento+1)%10000==0){
+	         percento++;
+	         cout<<percento<<" %"<<endl;} //controllo su come procede la simulazione
+              //  iter = 0;
 				//pointRec.X = 0;
 				//pointRec.Y = 0;
 				//pointRec.mult = 0;
@@ -165,13 +163,16 @@ void Ricostruzione2(){
 									//new(ptrhitsgood3[iter])Punto2(0., tst3->GetZ(), tst3->Getnum());
 									Zgood2.push_back(tst2->GetZ());
 									Zgood3.push_back(tst3->GetZ());
-									iter++;
+									//iter++;
 								}
 					//else continue;
 							}
 				   //else continue;
+				   tst3->Clear();
 						}
+					        
 			       }
+			       tst2->Clear();
 			   //else continue;
 			   }
 			
@@ -299,11 +300,11 @@ void Ricostruzione2(){
 				}
 				*/
 			}
-			
+		hits2->Clear();
+		hits3->Clear();	
 		
 		}		// fine ciclo eventi
-		hits2->Clear();
-		hits3->Clear();
+		
 		// # di Z ricostruite con una certa moltep su quelle simulate
 	/*	eff[0] = histM3->GetEntries()/denEff.x0;		
 		eff[1] = histM5->GetEntries()/denEff.x1;
@@ -407,7 +408,7 @@ void Ricostruzione2(){
 	
         hfile2.Close();
         
-        hfile3.Write();              
+        //hfile3.Write();              
         hfile3.Close();
         
         hfile4.Write();              
@@ -463,7 +464,7 @@ void Ricostruzione2(){
 	 
 				
          double TT = time.CpuTime();	
-         cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  
+         cout<<endl<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  
   
          }
  

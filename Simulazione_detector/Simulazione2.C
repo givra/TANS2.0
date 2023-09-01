@@ -148,9 +148,13 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		float count42 = 0;
 		float count52 = 0;
 		
+		int percento = 0;
               
 	for(int evento = 0; evento < numeroeventi; evento++){
-	         if(evento%50000==0) cout<<"siamo arrivati al numero "<<evento<<endl; //controllo su come procede la simulazione
+	         if((evento+1)%10000==0){
+	         percento++;
+	         cout<<percento<<" %"<<endl;} //controllo su come procede la simulazione
+	        
 		 vertice0.NewVertex(); //estraggo nuove coordinate casuali del vertice
 		 //calcolo la molteplicità del vertice in base alla mia scelta	
 		 if(scegli1==0) vertice0.SetMoltUniform();
@@ -339,7 +343,7 @@ void Simulazione2(bool multipleScatt){ // 0 = false, 1 = true
 		 delete hist2;
 				 
                  double TT = time.CpuTime();	
-                 cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
+                 cout<<endl<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
 	
  }
  
