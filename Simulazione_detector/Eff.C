@@ -193,8 +193,8 @@ void Eff(){
 		double errmediaM3 = abs(fM3->GetParError(1));
 		double sigmaM3 = fM3->GetParameter(2);
 		double errsigmaM3 = fM3->GetParError(2);
-		risol[0] = sigmaM3/mediaM3;
-		errrisol[0] = sqrt(pow(errsigmaM3/mediaM3,2)+pow(sigmaM3*errmediaM3/(mediaM3*mediaM3),2));
+		risol[0] = sigmaM3;
+		errrisol[0] = errsigmaM3;
 		fM3->Draw("same");
 		histM3->DrawCopy("same");
 		
@@ -209,8 +209,8 @@ void Eff(){
 		double errmediaM5 = abs(fM5->GetParError(1));
 		double sigmaM5 = fM5->GetParameter(2);
 		double errsigmaM5 = fM5->GetParError(2);
-		risol[1] = sigmaM5/mediaM5;
-		errrisol[1] = sqrt(pow(errsigmaM5/mediaM5,2)+pow(sigmaM5*errmediaM5/(mediaM5*mediaM5),2));
+		risol[1] = sigmaM5;
+		errrisol[1] = errsigmaM5;
 		//fM5->Draw("same");
 		//histM5->Draw("same");
 		
@@ -225,8 +225,8 @@ void Eff(){
 		double errmediaM6 = abs(fM6->GetParError(1));
 		double sigmaM6 = fM6->GetParameter(2);
 		double errsigmaM6 = fM6->GetParError(2);
-		risol[2] = sigmaM6/mediaM6;
-		errrisol[2] = sqrt(pow(errsigmaM6/mediaM6,2)+pow(sigmaM6*errmediaM6/(mediaM6*mediaM6),2));
+		risol[2] = sigmaM6;
+		errrisol[2] = errsigmaM6;
 		//fM6->Draw("same");
 		//histM6->Draw("same");
 		
@@ -241,11 +241,11 @@ void Eff(){
 		double errmediaM7 = abs(fM7->GetParError(1));
 		double sigmaM7 = fM7->GetParameter(2);
 		double errsigmaM7 = fM7->GetParError(2);
-		risol[3] = sigmaM7/mediaM7;
-		errrisol[3] = sqrt(pow(errsigmaM7/mediaM7,2)+pow(sigmaM7*errmediaM7/(mediaM7*mediaM7),2));
+		risol[3] = sigmaM7;
+		errrisol[3] = errsigmaM7;
 		//fM7->Draw("same");
 		//histM7->Draw("same");
-		cout<<"sigma "<<sigmaM7<<" media "<<mediaM7<<" risol "<<risol[3]<<endl;
+		
 		
 		//TCanvas *M8=new TCanvas("M8","M8",800,600);
 		TF1 *fM8 = new TF1("fM8","gaus",-0.04,0.04);
@@ -258,8 +258,8 @@ void Eff(){
 		double errmediaM8 = abs(fM8->GetParError(1));
 		double sigmaM8 = fM8->GetParameter(2);
 		double errsigmaM8 = fM8->GetParError(2);
-		risol[4] = sigmaM8/mediaM8;
-		errrisol[4] = sqrt(pow(errsigmaM8/mediaM8,2)+pow(sigmaM8*errmediaM8/(mediaM8*mediaM8),2));
+		risol[4] = sigmaM8;
+		errrisol[4] = errsigmaM8;
 		//fM8->Draw("same");
 		//histM8->Draw("same");
 		
@@ -274,8 +274,8 @@ void Eff(){
 		double errmediaM12 = abs(fM12->GetParError(1));
 		double sigmaM12 = fM12->GetParameter(2);
 		double errsigmaM12 = fM12->GetParError(2);
-		risol[5] = sigmaM12/mediaM12;
-		errrisol[5] = sqrt(pow(errsigmaM12/mediaM12,2)+pow(sigmaM12*errmediaM12/(mediaM12*mediaM12),2));
+		risol[5] = sigmaM12;
+		errrisol[5] = errsigmaM12;
 		//fM12->Draw("same");
 		//histM12->Draw("same");
 		
@@ -290,8 +290,8 @@ void Eff(){
 		double errmediaM22 = abs(fM22->GetParError(1));
 		double sigmaM22 = fM22->GetParameter(2);
 		double errsigmaM22 = fM22->GetParError(2);
-		risol[6] = sigmaM22/mediaM22;
-		errrisol[6] = sqrt(pow(errsigmaM22/mediaM22,2)+pow(sigmaM22*errmediaM22/(mediaM22*mediaM22),2));
+		risol[6] = sigmaM22;
+		errrisol[6] = errsigmaM22;
 		//fM22->Draw("same");
 		//histM22->Draw("same");
 		
@@ -306,8 +306,8 @@ void Eff(){
 		double errmediaM32 = abs(fM32->GetParError(1));
 		double sigmaM32 = fM32->GetParameter(2);
 		double errsigmaM32 = fM32->GetParError(2);
-		risol[7] = sigmaM32/mediaM32;
-		errrisol[7] = sqrt(pow(errsigmaM32/mediaM32,2)+pow(sigmaM32*errmediaM32/(mediaM32*mediaM32),2));
+		risol[7] = sigmaM32;
+		errrisol[7] = errsigmaM32;
 		//fM32->Draw("same");
 		//histM32->Draw("same");
 		
@@ -322,8 +322,8 @@ void Eff(){
 		double errmediaM42 = abs(fM42->GetParError(1));
 		double sigmaM42 = fM42->GetParameter(2);
 		double errsigmaM42 = fM42->GetParError(2);
-		risol[8] = sigmaM42/mediaM42;
-		errrisol[8] = sqrt(pow(errsigmaM42/mediaM42,2)+pow(sigmaM42*errmediaM42/(mediaM42*mediaM42),2));
+		risol[8] = sigmaM42;
+		errrisol[8] = errsigmaM42;
 		//fM42->Draw("same");
 		//histM42->Draw("same");
 		
@@ -338,8 +338,8 @@ void Eff(){
 		double errmediaM52 = abs(fM52->GetParError(1));
 		double sigmaM52 = fM52->GetParameter(2);
 		double errsigmaM52 = fM52->GetParError(2);
-		risol[9] = sigmaM52/mediaM52;
-		errrisol[9] = sqrt(pow(errsigmaM52/mediaM52,2)+pow(sigmaM52*errmediaM52/(mediaM52*mediaM52),2));
+		risol[9] = sigmaM52;
+		errrisol[9] = errsigmaM52;
 		//fM52->Draw("same");
 		//histM52->Draw("same");
 		
@@ -350,18 +350,20 @@ void Eff(){
 		TGraphErrors *graphE= new TGraphErrors(size,moltep,eff,errmoltep,erreff);
 		graphE->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphE->SetMarkerStyle(33);
-		graphE->SetTitle("Efficiency vs molteplicity");
-		graphE->GetXaxis()->SetTitle("molteplicity[]");
-		graphE->GetYaxis()->SetTitle("efficiency[]");
+		graphE->SetTitle("Efficiency vs Molteplicity");
+		graphE->GetXaxis()->SetTitle("Molteplicity[]");
+		graphE->GetYaxis()->SetTitle("Efficiency[]");
 		//c1->cd();
 		graphE->Draw("ap");
+
+	
 // ____________________________________________ risoluzione ________________________________________		
 		TGraphErrors *graphR= new TGraphErrors(size,moltep,risol,errmoltep,errrisol);
 		graphR->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphR->SetMarkerStyle(33);
-		graphR->SetTitle("Resolution vs molteplicity");
-		graphR->GetXaxis()->SetTitle("molteplicity[]");
-		graphR->GetYaxis()->SetTitle("Resolution[]");
+		graphR->SetTitle("Std Deviation vs Molteplicity");
+		graphR->GetXaxis()->SetTitle("Molteplicity[]");
+		graphR->GetYaxis()->SetTitle("Std Deviation[]");
 		//c1->cd();
 		graphR->Draw("ap");
 		
