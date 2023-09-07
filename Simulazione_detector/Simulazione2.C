@@ -26,14 +26,17 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
 	
         TStopwatch time;
 
-        //creo i Tree 
+        //creo Tree dove intendo salvare i miei dati
 		TFile hfile2("htree2.root","RECREATE");	
-        TTree *tree2 = new TTree("T2","TTree dati simulati");
-
+        TTree *tree2 = new TTree("T2","TTree con 3 branches");
+		// tree2->SetDirectory(&hfile2);
+		
+		// se provo a salvare tutto sul tree2 mi dà segmentation violation :)
 		TFile hfile3("htree3.root","RECREATE");			
 		TTree *tree3 = new TTree("T3","TTree dati efficienza");
+		// tree3->SetDirectory(&hfile3);
         
-        int numeroeventi = 10000;
+        int numeroeventi = 1000000;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto2",100);
         TClonesArray &hits1 = *ptrhits1;
@@ -73,9 +76,9 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
         Multis catter; //multiple scattering
         TracciaMC tr; //traccia
         
-		//Scelta della distribuzione della molteplicità
+        //Scelta della distribuzione della molteplicità
         TH1F* hist1;
-		 //distribuzione di molteplicita' 0->uniforme 1->kinem.root
+        //bool molteplicity = 1; //distribuzione di eta 0->uniforme 1->kinem.root
         
 		if(molteplicity==1){
                TFile F("kinem.root");
@@ -95,14 +98,13 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
   
                hist1 = new TH1F("hist1","molteplicity distribution",nobins,xlow,xhig);
                int j=1;
-			   for(int i=b1;i<=b2+1;i++)hist1->SetBinContent(j++,disteta->GetBinContent(i));
+               for(int i=b1;i<=b2+1;i++)hist1->SetBinContent(j++,disteta->GetBinContent(i));
                
           }
-		  
-		 //Scelta della distribuzione di Eta
-        TH1F* hist2;
-        //distribuzione di eta 0->uniforme 1->kinem.root
         
+        //Scelta della distribuzione di Eta
+        TH1F* hist2;
+        //bool eta = 1; //distribuzione di eta 0->uniforme 1->kinem.root
         
 		if(eta==1){
                TFile F("kinem.root");
@@ -145,37 +147,35 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
 		float count32 = 0;
 		float count42 = 0;
 		float count52 = 0;
-		float percento = 0;
-             	
-                 
-	for(int evento = 0; evento < numeroeventi; evento++){
 		
-	     if((evento+1)%10000==0){
-			 percento = percento + 1;
-			 cout<< percento << "%" << endl; //controllo su come procede la simulazione
-		 }
-		 
+		int percento = 0;
+              
+	for(int evento = 0; evento < numeroeventi; evento++){
+	         if((evento+1)%(numeroeventi/20)==0){
+	         percento = percento + 5;
+	         cout<<percento<<" %"<<endl;} //controllo su come procede la simulazione
+	        
 		 vertice0.NewVertex(); //estraggo nuove coordinate casuali del vertice
+		 //calcolo la molteplicità del vertice in base alla mia scelta	
 		 if(molteplicity==0) vertice0.SetMoltUniform();
-		 else {//distribuzione data del file kinem.root
+			 
+			 else {//distribuzione data del file kinem.root
         
-                //il numero di bins è 141
-                //il range va da 2.6 a 70.4821
-                //Xmax è 1 e Ymax è 27201
+                         //il numero di bins è 141
+                         //il range va da 2.6 a 70.4821
+                         //Xmax è 1 e Ymax è 27201
          
-                do{  
-                    u1 = gRandom->Rndm();
-                    u2 = gRandom->Rndm();
+                         do{  
+                             u1 = gRandom->Rndm();
+                             u2 = gRandom->Rndm();
   
-                    Yt = fmax1*u2;
-                    Xt = (141*u1)/1;
-                    f = hist1->GetBinContent(Xt);}
-                while(f<=Yt);
+                             Yt = fmax1*u2;
+                             Xt = (141*u1)/1;
+                             f = hist1->GetBinContent(Xt);}
+                         while(f<=Yt);
        
-                vertice0.SetMolt(((67.9821)*(Xt-1)/(141))+2.5);  
-         }
-		 
-		 
+                         vertice0.SetMolt(((67.9821)*(Xt-1)/(141))+2.5);  //-((4.08)/(2*34)));
+                         }
 		 //salvo informazioni nell'oggetto point	 
 		 point.mult = vertice0.GetMolteplicity();
 		 
@@ -187,39 +187,49 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
 		 switch(point.mult)
 		 {case 3:
 				count3++;
+				//cout << " n evento " << evento << " count3 " << count3 << endl;
 				break;
 		  case 5:
 				count5++;
+				//cout << " n evento " << evento << " count5 " << count5 << endl;
 				break;
 		  case 6:
 				count6++;
+				//cout << " n evento " << evento << " count6 " << count6 << endl;
 				break;
 		  case 7:
 				count7++;
+				//cout << " n evento " << evento << " count7 " << count7 << endl;
 		        break;
 		  case 8:
 				count8++;
+				//cout << " n evento " << evento << " count8 " << count8 << endl;
 		        break;
 		  case 12:
 				count12++;
+				//cout << " n evento " << evento << " count12 " << count12 << endl;
 		        break;
 		  case 22:
 				count22++;
+				//cout << " n evento " << evento << " count22 " << count22 << endl;
 		        break;
 		  case 32:
+				count32++;
+				//cout << " n evento " << evento << " count32 " << count32 << endl;
 		        break;
 		  case 42:
 				count42++;
+				//cout << " n evento " << evento << " count42 " << count42 << endl;
 		        break;
 		  case 52:
 				count52++;
+				//cout << " n evento " << evento << " count52 " << count52 << endl;
 		        break;
 			 
 		 }
 		 //calcolo intersezioni su ogni layer		
 		 numParticella = 0;		
-		 		 	
-                 
+		 		 
 		 do{		 		
 			 tr.SetOrigine(point.X,point.Y,point.Z); //setto come origine della traccia le coordinate del Vertice
 			 
@@ -240,7 +250,7 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
                              f = hist2->GetBinContent(Xt);}
                          while(f<=Yt);
        
-                         tr.SetEta(((4.08)*(Xt-1)/(34))-2.04);
+                         tr.SetEta(((4.08)*(Xt-1)/(34))-2.04); //-((4.08)/(2*34)));
                          }
                         
 			 //imposto la direzione iniziale della particella, estratta casualmente			 
@@ -248,6 +258,14 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
 			 tr.Theta();			 
 			 tr.CalcCoeff();
 			 
+			 //controllo che la particella non esca dal terzo layer del rivelatore
+			/* intersez = tr.intersezione(3);
+			 if(intersez[1] < -27/2 || intersez[1] > 27/2) {
+			 count++;
+			 cout<<"andata fuori numero "<<count<<endl;
+			 continue;
+			 }
+			 */
 			 
 			 for(int t=0; t<3; t++){
 			 
@@ -283,13 +301,13 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
                
                  // aggiungo ora numSpuri punti spuri su ciascun layer
 		 for(int u=0; u<numSpuri; u++){
+		    //new(hits1[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
 		    new(hits2[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
 		    new(hits3[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
 		    }
 		    
 		 tree2->Fill(); //riempie il tree
-		 	
-                 
+		 
 		 //ripristino i TClonesArrays
                  ptrhits1->Clear();
                  ptrhits2->Clear();
@@ -309,18 +327,23 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
 		 denEff.x7 = count32;
 		 denEff.x8 = count42;
 		 denEff.x9 = count52;
-		 tree3->Fill();	
+		 tree3->Fill();
 		 
+
+			// cout << denEff.x0 << " " ;
 		 
+		
+		 		 
 		 //salvo il tree sul file e lo chiudo
                  
                  hfile3.Write();
-				 hfile3.Close();
-				 delete hist1;
-				 delete hist2;
+		 hfile3.Close();
+		 
+		 delete hist1;
+		 delete hist2;
 				 
                  double TT = time.CpuTime();	
-                 cout<< endl <<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
+                 cout<<endl<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
 	
  }
  
