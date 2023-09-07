@@ -80,8 +80,17 @@ void Eff(){
 	
 	numeroeventi = tree2->GetEntries(); //acquisico informazione sul numero di eventi nel mio detector
 	
-	float Zrec[numeroeventi];
-    float Zsim[numeroeventi];
+       float binZsim[size] = {-17.5,-12.5,-7.5,-3.75,-1.25,1.25,3.75,7.5,12.5,17.5};
+       float errbinZsim[size] = {2.5,2.5,2.5,1.25,1.25,1.25,1.25,2.5,2.5,2.5};
+       float effZsim[size] = {0,0,0,0,0,0,0,0,0,0};
+       float effZrec[size] = {0,0,0,0,0,0,0,0,0,0};
+       float eff2[size] = {0,0,0,0,0,0,0,0,0,0};
+       float erreff2[size] = {0,0,0,0,0,0,0,0,0,0};
+       
+       
+	
+	float Zrec[numeroeventi]; //!!!!!FORSE NON SERVONO
+        float Zsim[numeroeventi];
 	
        
 	// loop sugli ingressi nel TTree
@@ -150,7 +159,64 @@ void Eff(){
 					break;
 				}
 		}
+		
+		if((point.Z>-20.)&&(point.Z<-15.))effZsim[0]++; 
+		                                     
+		if((point.Z>-15.)&&(point.Z<-10.))effZsim[1]++; 
+		                                    
+		if((point.Z>-10.)&&(point.Z<-5.))effZsim[2]++; 
+		                                    
+		if((point.Z>-5.)&&(point.Z<-2.5))effZsim[3]++; 
+		                                    
+		if((point.Z>-2.5)&&(point.Z<0.))effZsim[4]++; 
+		                                     
+		if((point.Z>0.)&&(point.Z<2.5))effZsim[5]++; 
+		                                     
+		if((point.Z>2.5)&&(point.Z<5.))effZsim[6]++; 
+		                                     
+		if((point.Z>5.)&&(point.Z<10.))effZsim[7]++; 
+		                                     
+		if((point.Z>10.)&&(point.Z<15.))effZsim[8]++; 
+		                                   
+		if((point.Z>15.)&&(point.Z<20.))effZsim[9]++; 
+		
+		
+		
+		if((pointRec.Z>-20.)&&(pointRec.Z<-15.))effZrec[0]++; 
+		                                     
+		if((pointRec.Z>-15.)&&(pointRec.Z<-10.))effZrec[1]++; 
+		                                    
+		if((pointRec.Z>-10.)&&(pointRec.Z<-5.))effZrec[2]++; 
+		                                    
+		if((pointRec.Z>-5.)&&(pointRec.Z<-2.5))effZrec[3]++; 
+		                                    
+		if((pointRec.Z>-2.5)&&(pointRec.Z<0.))effZrec[4]++; 
+		                                     
+		if((pointRec.Z>0.)&&(pointRec.Z<2.5))effZrec[5]++; 
+		                                     
+		if((pointRec.Z>2.5)&&(pointRec.Z<5.))effZrec[6]++; 
+		                                     
+		if((pointRec.Z>5.)&&(pointRec.Z<10.))effZrec[7]++; 
+		                                     
+		if((pointRec.Z>10.)&&(pointRec.Z<15.))effZrec[8]++; 
+		                                   
+		if((pointRec.Z>15.)&&(pointRec.Z<20.))effZrec[9]++; 
+		                                    
 	} 		// fine ciclo eventi
+	
+	for(int ii=0; ii<size; ii++){ eff2[ii] = effZrec[ii] / effZsim[ii];}
+	
+	        // errore binomiale
+		erreff2[0] = pow((eff2[0]*(1-eff2[0])/effZsim[0]),0.5);
+		erreff2[1] = pow((eff2[1]*(1-eff2[1])/effZsim[1]),0.5);
+		erreff2[2] = pow((eff2[2]*(1-eff2[2])/effZsim[2]),0.5);
+		erreff2[3] = pow((eff2[3]*(1-eff2[3])/effZsim[3]),0.5);
+		erreff2[4] = pow((eff2[4]*(1-eff2[4])/effZsim[4]),0.5);
+		erreff2[5] = pow((eff2[5]*(1-eff2[5])/effZsim[5]),0.5);
+		erreff2[6] = pow((eff2[6]*(1-eff2[6])/effZsim[6]),0.5);
+		erreff2[7] = pow((eff2[7]*(1-eff2[7])/effZsim[7]),0.5);
+		erreff2[8] = pow((eff2[8]*(1-eff2[8])/effZsim[8]),0.5);
+		erreff2[9] = pow((eff2[9]*(1-eff2[9])/effZsim[9]),0.5);
 	
 	// # di Z ricostruite con una certa moltep su quelle simulate
 		eff[0] = histM3->GetEntries()/denEff.x0;		
@@ -345,7 +411,7 @@ void Eff(){
 		
 		for(int l=0; l<=9; l++) cout<<risol[l]<<endl;
 		
-// __________________________________________ efficienza _________________________________________
+// __________________________________________ efficienza Vs moltep _________________________________________
 		//TCanvas *c1=new TCanvas("c1","c1",800,600);
 		TGraphErrors *graphE= new TGraphErrors(size,moltep,eff,errmoltep,erreff);
 		graphE->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
@@ -355,7 +421,17 @@ void Eff(){
 		graphE->GetYaxis()->SetTitle("Efficiency[]");
 		//c1->cd();
 		graphE->Draw("ap");
-
+		
+// __________________________________________ efficienza Vs Ztrue _________________________________________
+		//TCanvas *c1=new TCanvas("c1","c1",800,600);
+		TGraphErrors *graphE2= new TGraphErrors(size,binZsim,eff2,errbinZsim,erreff2);
+		graphE2->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
+		graphE2->SetMarkerStyle(33);
+		graphE2->SetTitle("Efficiency vs Zsim");
+		graphE2->GetXaxis()->SetTitle("Zsim[cm]");
+		graphE2->GetYaxis()->SetTitle("Eff[]");
+		//c1->cd();
+		graphE2->Draw("ap");
 	
 // ____________________________________________ risoluzione ________________________________________		
 		TGraphErrors *graphR= new TGraphErrors(size,moltep,risol,errmoltep,errrisol);
@@ -379,7 +455,8 @@ void Eff(){
         histM42->Write();
         histM52->Write();
         graphE->Write();
-		graphR->Write();
+        graphE2->Write();
+	graphR->Write();
         file1.Close();
         delete histM3;
         delete histM5;
@@ -391,10 +468,12 @@ void Eff(){
         delete histM32;
         delete histM42;
         delete histM52;
-       // delete graphE;
-        //graphE = nullptr;
-	//	delete graphR;
-       // graphR = nullptr;
+        delete graphE;
+        graphE = nullptr;
+        delete graphE2;
+        graphE2 = nullptr;
+	delete graphR;
+       graphR = nullptr;
 		
 		double TT = time.CpuTime();	
          cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  
