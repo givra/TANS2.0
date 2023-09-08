@@ -7,18 +7,18 @@ ClassImp(Punto)
 
 //________________________________________________________________________
 Punto::Punto():TObject(),
- fX(0.),
- fY(0.),
- fZ(0.){
+ fnum(0),
+ fZ(0.),
+ fPhi(0.){
    // default constructor
  }
 
 
 //___________________________________________________________________________
-Punto::Punto(float X, float Y, float Z):TObject(),
- fX(X),
- fY(Y),
- fZ(Z){
+Punto::Punto(float Phi, float Z, int num):TObject(),
+ fnum(num),
+ fZ(Z),
+ fPhi(Phi){
 	//standard constructor 
 }	     
 

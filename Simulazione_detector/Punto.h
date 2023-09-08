@@ -1,5 +1,5 @@
-#ifndef PUNTO_H
-#define PUNTO_H
+#ifndef Punto_H
+#define Punto_H
 
 #include "TObject.h"
 
@@ -9,21 +9,20 @@ class Punto : public TObject
 public:
 
 Punto();
-Punto(float X, float Y, float Z);
+Punto(float Phi, float Z, int num);
 
 virtual ~Punto();
 
- float GetX() const {return fX;} 
- float GetY() const {return fY;}
  float GetZ() const {return fZ;}
-
+ float GetPhi() const {return fPhi;}
+ int Getnum() const {return fnum;}
 
 private:
 
 
-float fX;
-float fY;
+int fnum;
 float fZ;
+float fPhi;
 
 //ClassDef(Punto,1)
 };

@@ -1,6 +1,6 @@
 #include <Riostream.h>
 #include "Multis.h"
-#include "TracciaMC.h" 
+#include "Traccia.h" 
 #include "TObject.h" 
 #include "TRandom3.h"
 #include "TMath.h"
@@ -26,7 +26,7 @@ void Multis::NuoviAngoli(bool m){
 	}
 }
 
-void Multis::VarioAngolo(TracciaMC track){
+void Multis::VarioAngolo(Traccia track){
 
  float Phi = track.GetPhi();
  float Theta = track.GetTheta();

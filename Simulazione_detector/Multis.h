@@ -7,7 +7,7 @@
 #include "TObject.h" 
 #include "TRandom3.h"
 
-#include "TracciaMC.h"
+#include "Traccia.h"
 
 class Multis : public TRandom3 { 
 
@@ -17,7 +17,7 @@ public:
   virtual ~Multis();
   
  
-  void VarioAngolo(TracciaMC track); //vado a modificare fC di track
+  void VarioAngolo(Traccia track); //vado a modificare fC di track
   void NuoviAngoli(bool m);
     
 private: 

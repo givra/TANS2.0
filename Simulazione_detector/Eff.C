@@ -12,9 +12,9 @@
 #include "TH1F.h"
 #include "TAxis.h"
 
-#include "Punto2.h"
+#include "Punto.h"
 #include "Vertex.h"
-#include "TracciaMC.h"
+#include "Traccia.h"
 #include "Multis.h"
 #include "Smearing.h"
 
@@ -38,9 +38,10 @@ void Eff(){
 	float risol2[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le risoluzioni in funz di ztrue
 	float errrisol2[size] = {0,0,0,0,0,0,0,0,0,0};
 	float binZsim[size] = {-17.5,-12.5,-7.5,-3.75,-1.25,1.25,3.75,7.5,12.5,17.5};
-    float errbinZsim[size] = {2.5,2.5,2.5,1.25,1.25,1.25,1.25,2.5,2.5,2.5};
-    float effZsim[size] = {0,0,0,0,0,0,0,0,0,0};
-    float effZrec[size] = {0,0,0,0,0,0,0,0,0,0};
+        float errbinZsim[size] = {2.5,2.5,2.5,1.25,1.25,1.25,1.25,2.5,2.5,2.5};
+        float effZsim[size] = {0,0,0,0,0,0,0,0,0,0};
+        float effZrec[size] = {0,0,0,0,0,0,0,0,0,0};
+        float sigma2[size] = {0,0,0,0,0,0,0,0,0,0};
 	float differenza = 0;
 	
 	// histo per efficienza
@@ -101,7 +102,7 @@ void Eff(){
 	
 	float Zrec[numeroeventi]; //!!!!FORSE NON SERVONO
     float Zsim[numeroeventi];
-      
+    int conto = 0;
 	// loop sugli ingressi nel TTree
     for(int ev=0;ev<numeroeventi;ev++){
                 
@@ -114,7 +115,7 @@ void Eff(){
 		
 		if(pointRec.Z != 100.){	
 			differenza = pointRec.Z	- Zsim[ev];
-			
+			if(differenza>1) conto++;
 			switch(point.mult)
 				{case 3:
 					histM3->Fill(differenza);
@@ -243,6 +244,7 @@ void Eff(){
 	} 		// fine ciclo eventi
 	
 	for(int ii=0; ii<size; ii++){ eff2[ii] = effZrec[ii] / effZsim[ii];}
+	cout<<"Quante differenze > 1: "<<conto<<endl;
 	
 	 // errore binomiale
 		erreff2[0] = pow((eff2[0]*(1-eff2[0])/effZsim[0]),0.5);
@@ -385,94 +387,114 @@ void Eff(){
 //______________________________ fit gaussiani risoluzione vs zsim____________________________
 	
 	cout << "******************* fit gaus risoluzione vs zsim ********************************" << endl;
-		TF1 *fR0 = new TF1("fR0","gaus",-0.05,0.05);
+		TF1 *fR0 = new TF1("fR0","gaus",-0.07,0.07);
 		fR0->SetLineColor(kRed);
 		histR0->Fit(fR0,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR0 = fR0->GetParameter(2);
+		double mediaR0 = TMath::Abs(fR0->GetParameter(1));
 		double errsigmaR0 = fR0->GetParError(2);
-		risol2[0] = sigmaR0;
+		risol2[0] = sigmaR0/mediaR0;
+		sigma2[0] = sigmaR0;
 		errrisol2[0] = errsigmaR0;
 		
-		TF1 *fR1 = new TF1("fR1","gaus",-0.05,0.05);
+		TF1 *fR1 = new TF1("fR1","gaus",-0.03,0.03);
 		fR1->SetLineColor(kRed);
 		histR1->Fit(fR1,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR1 = fR1->GetParameter(2);
+		double mediaR1 = TMath::Abs(fR1->GetParameter(1));
 		double errsigmaR1 = fR1->GetParError(2);
-		risol2[1] = sigmaR1;
+		risol2[1] = sigmaR1/mediaR1;
+		sigma2[1] = sigmaR1;
 		errrisol2[1] = errsigmaR1;
 		
-		TF1 *fR2 = new TF1("fR2","gaus",-0.05,0.05);
+		TF1 *fR2 = new TF1("fR2","gaus",-0.03,0.03);
 		fR2->SetLineColor(kRed);
 		histR2->Fit(fR2,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR2 = fR2->GetParameter(2);
+		double mediaR2 = TMath::Abs(fR2->GetParameter(1));
 		double errsigmaR2 = fR2->GetParError(2);
-		risol2[2] = sigmaR2;
+		risol2[2] = sigmaR2/mediaR2;
+		sigma2[2] = sigmaR2;
 		errrisol2[2] = errsigmaR2;
 		
-		TF1 *fR3 = new TF1("fR3","gaus",-0.05,0.05);
+		TF1 *fR3 = new TF1("fR3","gaus",-0.03,0.03);
 		fR3->SetLineColor(kRed);
 		histR3->Fit(fR3,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR3 = fR3->GetParameter(2);
+		double mediaR3 = TMath::Abs(fR3->GetParameter(1));
 		double errsigmaR3 = fR3->GetParError(2);
-		risol2[3] = sigmaR3;
+		risol2[3] = sigmaR3/mediaR3;
+		sigma2[3] = sigmaR3;
 		errrisol2[3] = errsigmaR3;
 		
-		TF1 *fR4 = new TF1("fR4","gaus",-0.05,0.05);
+		TF1 *fR4 = new TF1("fR4","gaus",-0.03,0.03);
 		fR4->SetLineColor(kRed);
 		histR4->Fit(fR4,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR4 = fR4->GetParameter(2);
+		double mediaR4 = TMath::Abs(fR4->GetParameter(1));
 		double errsigmaR4 = fR4->GetParError(2);
-		risol2[4] = sigmaR4;
+		risol2[4] = sigmaR4/mediaR4;
+		sigma2[4] = sigmaR4;
 		errrisol2[4] = errsigmaR4;
 		
-		TF1 *fR5 = new TF1("fR5","gaus",-0.05,0.05);
+		TF1 *fR5 = new TF1("fR5","gaus",-0.03,0.03);
 		fR5->SetLineColor(kRed);
 		histR5->Fit(fR5,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR5 = fR5->GetParameter(2);
+		double mediaR5 = TMath::Abs(fR5->GetParameter(1));
 		double errsigmaR5 = fR5->GetParError(2);
-		risol2[5] = sigmaR5;
+		risol2[5] = sigmaR5/mediaR5;
+		sigma2[5] = sigmaR5;
 		errrisol2[5] = errsigmaR5;
 		
-		TF1 *fR6 = new TF1("fR6","gaus",-0.05,0.05);
+		TF1 *fR6 = new TF1("fR6","gaus",-0.03,0.03);
 		fR6->SetLineColor(kRed);
 		histR6->Fit(fR6,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR6 = fR6->GetParameter(2);
+		double mediaR6 = TMath::Abs(fR6->GetParameter(1));
 		double errsigmaR6 = fR6->GetParError(2);
-		risol2[6] = sigmaR6;
+		risol2[6] = sigmaR6/mediaR6;
+		sigma2[6] = sigmaR6;
 		errrisol2[6] = errsigmaR6;
 		
-		TF1 *fR7 = new TF1("fR7","gaus",-0.05,0.05);
+		TF1 *fR7 = new TF1("fR7","gaus",-0.03,0.03);
 		fR7->SetLineColor(kRed);
 		histR7->Fit(fR7,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR7 = fR7->GetParameter(2);
+		double mediaR7 = TMath::Abs(fR7->GetParameter(1));
 		double errsigmaR7 = fR7->GetParError(2);
-		risol2[7] = sigmaR7;
+		risol2[7] = sigmaR7/mediaR7;
+		sigma2[7] = sigmaR7;
 		errrisol2[7] = errsigmaR7;
 		
-		TF1 *fR8 = new TF1("fR8","gaus",-0.05,0.05);
+		TF1 *fR8 = new TF1("fR8","gaus",-0.03,0.03);
 		fR8->SetLineColor(kRed);
 		histR8->Fit(fR8,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR8 = fR8->GetParameter(2);
+		double mediaR8 = TMath::Abs(fR8->GetParameter(1));
 		double errsigmaR8 = fR8->GetParError(2);
-		risol2[8] = sigmaR8;
+		risol2[8] = sigmaR8/mediaR8;
+		sigma2[8] = sigmaR8;
 		errrisol2[8] = errsigmaR8;
 		
-		TF1 *fR9 = new TF1("fR9","gaus",-0.05,0.05);
+		TF1 *fR9 = new TF1("fR9","gaus",-0.01,0.01);
 		fR9->SetLineColor(kRed);
 		histR9->Fit(fR9,"NR+");
 		gStyle->SetOptFit(0);
 		double sigmaR9 = fR9->GetParameter(2);
+		double mediaR9 = TMath::Abs(fR9->GetParameter(1));
 		double errsigmaR9 = fR9->GetParError(2);
-		risol2[9] = sigmaR9;
+		risol2[9] = sigmaR9/mediaR9;
+		sigma2[9] = sigmaR9;
 		errrisol2[9] = errsigmaR9;
 		
 		
@@ -506,7 +528,7 @@ void Eff(){
 		//c1->cd();
 		graphR->Draw("ap");
 // ____________________________________________ risoluzione vs Ztrue ________________________________________		
-		TGraphErrors *graphR2= new TGraphErrors(size,binZsim,risol2,errbinZsim,errrisol2);
+		TGraphErrors *graphR2= new TGraphErrors(size,binZsim,sigma2,errbinZsim,errrisol2);
 		graphR2->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphR2->SetMarkerStyle(33);
 		graphR2->SetTitle("dev std vs Ztrue");
@@ -577,5 +599,9 @@ void Eff(){
 		
 		double TT = time.CpuTime();	
          cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  
+         
+         MemInfo_t memInfo;
+         gSystem->GetMemInfo(&memInfo);
+cout << "Mem Used = " << memInfo.fMemUsed << " MB"<<endl; //returning value in MB
 		
 }

@@ -2,13 +2,13 @@
 #include <fstream>
 #include <math.h>
 
-//#include "Punto.h"
-#include "Punto2.h"
+
+#include "Punto.h"
 #include "TClonesArray.h"
-#include "Vertex.h"
-#include "TracciaMC.h"
-#include "Multis.h"
-#include "Smearing.h"
+//#include "Vertex.h"
+//#include "Traccia.h"
+//#include "Multis.h"
+//#include "Smearing.h"
 #include "TRandom3.h"
 
 #include <vector>
@@ -99,11 +99,11 @@ void Ricostruzione2(){
 		
 				 
         //dichiarazione TClonesArray
-        //TClonesArray *hits1 = new TClonesArray("Punto2",numeroeventi); //per la ricostruzione non usiamo il primo layer
-        TClonesArray *hits2 = new TClonesArray("Punto2",100);
+        //TClonesArray *hits1 = new TClonesArray("Punto",numeroeventi); //per la ricostruzione non usiamo il primo layer
+        TClonesArray *hits2 = new TClonesArray("Punto",100);
         //TClonesArray &ptrhits2 = *hits2; 
       
-        TClonesArray *hits3 = new TClonesArray("Punto2",100);
+        TClonesArray *hits3 = new TClonesArray("Punto",100);
        // TClonesArray &ptrhits3 = *hits3;
 		
 		//float denEff[10];
@@ -118,10 +118,10 @@ void Ricostruzione2(){
 	branch3->SetAddress(&denEff.x0);
   
         //arrays in cui salvo le buone combinazioni di hits
-    /*    TClonesArray *hitsgood2 = new TClonesArray("Punto2",100);
+    /*    TClonesArray *hitsgood2 = new TClonesArray("Punto",100);
         TClonesArray &ptrhitsgood2 = *hitsgood2;
       
-        TClonesArray *hitsgood3 = new TClonesArray("Punto2",100);
+        TClonesArray *hitsgood3 = new TClonesArray("Punto",100);
         TClonesArray &ptrhitsgood3 = *hitsgood3;
     */    
         //provo invece con vectors di float
@@ -132,8 +132,8 @@ void Ricostruzione2(){
 		
 	// loop sugli ingressi nel TTree
         for(int ev=0;ev<numeroeventi;ev++){
-              if((evento+1)%10000==0){
-	         percento++;
+              if((ev+1)%(numeroeventi/20)==0){
+	         percento = percento + 5;
 	         cout<<percento<<" %"<<endl;} //controllo su come procede la simulazione
               //  iter = 0;
 				//pointRec.X = 0;
@@ -148,19 +148,19 @@ void Ricostruzione2(){
 
                 for(int a = 0; a < point.mult; a++){		// loop su hits layer 2
 			     
-					Punto2 *tst2;
-					tst2=(Punto2*)hits2->At(a);
+					Punto *tst2;
+					tst2=(Punto*)hits2->At(a);
 						
 					if(tst2->Getnum()!=-1){			// escludiamo hits fuori dal rivelatore
 						for(int b = 0; b < point.mult; b++){		// loop su hits layer 3
 				  
-						Punto2 *tst3;
-						tst3=(Punto2*)hits3->At(b);
+						Punto *tst3;
+						tst3=(Punto*)hits3->At(b);
 						if(tst3->Getnum()!=-1){
 							deltaPhi = tst2->GetPhi() - tst3->GetPhi();
 								if(abs(deltaPhi) < 0.01){						
-									//new(ptrhitsgood2[iter])Punto2(0., tst2->GetZ(), tst2->Getnum());
-									//new(ptrhitsgood3[iter])Punto2(0., tst3->GetZ(), tst3->Getnum());
+									//new(ptrhitsgood2[iter])Punto(0., tst2->GetZ(), tst2->Getnum());
+									//new(ptrhitsgood3[iter])Punto(0., tst3->GetZ(), tst3->Getnum());
 									Zgood2.push_back(tst2->GetZ());
 									Zgood3.push_back(tst3->GetZ());
 									//iter++;
@@ -183,10 +183,10 @@ void Ricostruzione2(){
 		// for(int e=0; e<ptrhitsgood2.GetEntries(); e++){	
 			for(int e=0; e<Zgood2.size(); e++){		// ciclo sui punti buoni
 			
-		/*	Punto2 *tstgood2;
-			Punto2 *tstgood3;
-			tstgood2=(Punto2*)hitsgood2->At(e);
-			tstgood3=(Punto2*)hitsgood3->At(e);
+		/*	Punto *tstgood2;
+			Punto *tstgood3;
+			tstgood2=(Punto*)hitsgood2->At(e);
+			tstgood3=(Punto*)hitsgood3->At(e);
 				
 			Z2 = tstgood2->GetZ();
 				

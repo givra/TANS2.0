@@ -14,9 +14,9 @@
 #include "TH1F.h"
 #include "TAxis.h"
 
-#include "Punto2.h"
+#include "Punto.h"
 #include "Vertex.h"
-#include "TracciaMC.h"
+#include "Traccia.h"
 #include "Multis.h"
 #include "Smearing.h"
 
@@ -38,13 +38,13 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
         
         int numeroeventi = 1000000;
         
-        TClonesArray *ptrhits1 = new TClonesArray("Punto2",100);
+        TClonesArray *ptrhits1 = new TClonesArray("Punto",100);
         TClonesArray &hits1 = *ptrhits1;
         
-        TClonesArray *ptrhits2 = new TClonesArray("Punto2",100);
+        TClonesArray *ptrhits2 = new TClonesArray("Punto",100);
         TClonesArray &hits2 = *ptrhits2;
         
-        TClonesArray *ptrhits3 = new TClonesArray("Punto2",100);
+        TClonesArray *ptrhits3 = new TClonesArray("Punto",100);
         TClonesArray &hits3 = *ptrhits3;
 		
 		typedef struct{
@@ -74,7 +74,7 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
                   
         Vertex vertice0; //vertice
         Multis catter; //multiple scattering
-        TracciaMC tr; //traccia
+        Traccia tr; //traccia
         
         //Scelta della distribuzione della molteplicità
         TH1F* hist1;
@@ -282,15 +282,15 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
 					ringo.smearPhi(intersez[0], t+1);
 									
 								//inserisco le hits dentro ai branches del tree   				
-					if(t==0) new(hits1[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
-					if(t==1) new(hits2[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
-					if(t==2) new(hits3[numParticella])Punto2(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+					if(t==0) new(hits1[numParticella])Punto(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+					if(t==1) new(hits2[numParticella])Punto(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+					if(t==2) new(hits3[numParticella])Punto(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
 			    }
 				// se sta fuori dal rivelatore assegno label -1
 			    else{
-					if(t==0) new(hits1[numParticella])Punto2(intersez[0],intersez[1], -1);
-					if(t==1) new(hits2[numParticella])Punto2(intersez[0],intersez[1], -1);
-					if(t==2) new(hits3[numParticella])Punto2(intersez[0],intersez[1], -1);
+					if(t==0) new(hits1[numParticella])Punto(intersez[0],intersez[1], -1);
+					if(t==1) new(hits2[numParticella])Punto(intersez[0],intersez[1], -1);
+					if(t==2) new(hits3[numParticella])Punto(intersez[0],intersez[1], -1);
 			    }
 				
 			  }			
@@ -301,9 +301,9 @@ void Simulazione2(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false
                
                  // aggiungo ora numSpuri punti spuri su ciascun layer
 		 for(int u=0; u<numSpuri; u++){
-		    //new(hits1[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
-		    new(hits2[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
-		    new(hits3[point.mult + u])Punto2(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
+		    //new(hits1[point.mult + u])Punto(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
+		    new(hits2[point.mult + u])Punto(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
+		    new(hits3[point.mult + u])Punto(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
 		    }
 		    
 		 tree2->Fill(); //riempie il tree
