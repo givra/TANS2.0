@@ -19,10 +19,7 @@ public:
   
   void SetMolt(float moltepl);
   void SetMoltUniform(); //distribuzione uniforme per molteplicità tra 1 e 80 
-  void SetZUniform(); //impostare Z con distribuzione uniforme tra -20 e 20 //SERVE??
-  
-  
-  //vector<float> GetCoordinate();
+ 
   int GetMolteplicity();
   
   float GetX();

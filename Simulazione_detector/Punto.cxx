@@ -1,11 +1,9 @@
 #include "TObject.h"
 #include "Punto.h"
 
-
-
 ClassImp(Punto)
 
-//________________________________________________________________________
+
 Punto::Punto():TObject(),
  fnum(0),
  fZ(0.),
@@ -13,8 +11,6 @@ Punto::Punto():TObject(),
    // default constructor
  }
 
-
-//___________________________________________________________________________
 Punto::Punto(float Phi, float Z, int num):TObject(),
  fnum(num),
  fZ(Z),
@@ -22,7 +18,6 @@ Punto::Punto(float Phi, float Z, int num):TObject(),
 	//standard constructor 
 }	     
 
-//___________________________________________________________________________
 Punto::~Punto()	 {
   // destructor
 }

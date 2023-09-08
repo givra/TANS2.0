@@ -15,8 +15,7 @@ public:
   
   Multis();
   virtual ~Multis();
-  
- 
+   
   void VarioAngolo(Traccia track); //vado a modificare fC di track
   void NuoviAngoli(bool m);
     

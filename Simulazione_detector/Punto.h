@@ -3,15 +3,14 @@
 
 #include "TObject.h"
 
-class Punto : public TObject
-{
+class Punto : public TObject{
 
 public:
 
-Punto();
-Punto(float Phi, float Z, int num);
+ Punto();
+ Punto(float Phi, float Z, int num);
 
-virtual ~Punto();
+ virtual ~Punto();
 
  float GetZ() const {return fZ;}
  float GetPhi() const {return fPhi;}
@@ -19,12 +18,10 @@ virtual ~Punto();
 
 private:
 
-
 int fnum;
 float fZ;
 float fPhi;
 
-//ClassDef(Punto,1)
 };
 
 
