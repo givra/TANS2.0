@@ -19,7 +19,7 @@ class Traccia : public TRandom3 {
 	void SetOrigine(float Xo, float Yo, float Zo);	
 	
 	void SetEtaUni();
-	void SetEta(bool Eta);   //scegli se estrarre con uniforme (0) o con kinem.root (1)
+	void SetEta(float Eta);   //scegli se estrarre con uniforme (0) o con kinem.root (1)
 	
 	void SetPhi();	// uniforme
 	void Theta();  // funzione che da Eta (Pseudorapidità) calcola Theta
@@ -40,7 +40,7 @@ class Traccia : public TRandom3 {
 	
 	private:
 	
-	bool fEta;
+	float fEta;
 	float fPhi;
 	float fTheta;
 	

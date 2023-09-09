@@ -32,7 +32,7 @@ void Traccia::SetEtaUni(){
          fEta = (gRandom->Rndm()*2) - 1;
          }
 
-void Traccia::SetEta(bool Eta){
+void Traccia::SetEta(float Eta){
               
          fEta = Eta;
          }
