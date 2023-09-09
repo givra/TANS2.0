@@ -2,7 +2,7 @@
 #include <fstream>
 #include <math.h>
 
-#include "Punto2.h"
+#include "Punto.h"
 #include "TClonesArray.h"
 #include "TRandom3.h"
 
@@ -31,11 +31,6 @@ void Ricostruzione(){
 			
 	float differenza = 0;
 	float Zrec2;
-	const int size = 10; 			// dimensione array per TGraph
-	float moltep[size] = {0,0,0,0,0,0,0,0,0,0}; 		// array contenente le moltep di ogni evento da passare al TGraph
-	float errmoltep[size] = {0,0,0,0,0,0,0,0,0,0};	// binomiale??
-	float eff[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le efficienze
-	float erreff[size] = {0,0,0,0,0,0,0,0,0,0};
 	
 	
         //definizione struct
@@ -76,8 +71,8 @@ void Ricostruzione(){
         float Zsim[numeroeventi];	
 		
         //dichiarazione TClonesArray
-        TClonesArray *hits2 = new TClonesArray("Punto2",100);
-        TClonesArray *hits3 = new TClonesArray("Punto2",100);
+        TClonesArray *hits2 = new TClonesArray("Punto",100);
+        TClonesArray *hits3 = new TClonesArray("Punto",100);
   
         //definizione degli indirizzi per la lettura dei dati su ttree
         b1->SetAddress(&point.X);
