@@ -35,13 +35,13 @@ void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false,
         
         int numeroeventi = 50000;
         
-        TClonesArray *ptrhits1 = new TClonesArray("Punto2",100);
+        TClonesArray *ptrhits1 = new TClonesArray("Punto",100);
         TClonesArray &hits1 = *ptrhits1;
         
-        TClonesArray *ptrhits2 = new TClonesArray("Punto2",100);
+        TClonesArray *ptrhits2 = new TClonesArray("Punto",100);
         TClonesArray &hits2 = *ptrhits2;
         
-        TClonesArray *ptrhits3 = new TClonesArray("Punto2",100);
+        TClonesArray *ptrhits3 = new TClonesArray("Punto",100);
         TClonesArray &hits3 = *ptrhits3;
 		
 		typedef struct{
