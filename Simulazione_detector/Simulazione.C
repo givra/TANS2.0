@@ -3,145 +3,329 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include <vector>
 
 #include "TFile.h"
 #include "TTree.h"
 #include "TBranch.h"
-
-#include "Punto.h"
 #include "TClonesArray.h"
 #include "Riostream.h"
 #include "TRandom3.h"
-#include "Vertex.h"
-#include "TracciaMC.h"
-#include "Multis.h"
-#include "TRandom3.h"
+#include "TH1F.h"
+#include "TAxis.h"
 
-#include <vector>
+#include "Punto.h"
+#include "Vertex.h"
+#include "Traccia.h"
+#include "Multis.h"
+#include "Smearing.h"
 
 using namespace std;
 
-void Simulazione(){
+void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false, 1 = true
 	
-  TStopwatch time;
-	
- bool multipleScatt = 1;		// 0 = false, 1 = true
- 
-  // ______________grafico 3d intersezioni_______________
-		
-	TFile hfile("htree.root","RECREATE");	  
-        TTree *tree = new TTree("T","TTree con 2 branches");
+        TStopwatch time;
+
+        //creo i Tree 
+		TFile hfile2("htree2.root","RECREATE");	
+        TTree *tree2 = new TTree("T2","TTree dati simulati");
+
+		TFile hfile3("htree3.root","RECREATE");			
+		TTree *tree3 = new TTree("T3","TTree dati efficienza");
         
-        int numeroeventi = 1000;
+        int numeroeventi = 50000;
         
-        TClonesArray *ptrhits1 = new TClonesArray("Punto",numeroeventi);
+        TClonesArray *ptrhits1 = new TClonesArray("Punto2",100);
         TClonesArray &hits1 = *ptrhits1;
         
-        TClonesArray *ptrhits2 = new TClonesArray("Punto",numeroeventi);
+        TClonesArray *ptrhits2 = new TClonesArray("Punto2",100);
         TClonesArray &hits2 = *ptrhits2;
         
-        TClonesArray *ptrhits3 = new TClonesArray("Punto",numeroeventi);
+        TClonesArray *ptrhits3 = new TClonesArray("Punto2",100);
         TClonesArray &hits3 = *ptrhits3;
-        
-      
-        
-        ofstream fileout1("Zsim.txt"); //forse questo diventa inutile perchè ho già una foglia del tree con la Z del vertice
-		 
-		   typedef struct{
-                   float X,Y,Z;
-                   int mult;} VTX;
-    
-    
-                   static VTX point;
-		 
-		   tree->Branch("VertMult",&point.X,"X/F:Y:Z:mult/I");
-                   tree->Branch("HitsPrimo",&ptrhits1,"HitsPrimo/F");
-                   tree->Branch("HitsSecondo",&ptrhits2,"HitsSecondo/F");
-                   tree->Branch("HitsTerzo",&ptrhits3,"HitsTerzo/F");
-                   
-                   vector<float> coordinate, intersez;
-                   Vertex vertice0;
-                   
-              
-	for(int evento = 0; evento < numeroeventi; evento++){
-	
-
-		    vertice0.NewVertex();
-		 		 
-		     point.mult = vertice0.GetMolteplicity();
-                     point.X = vertice0.GetX();
-                     point.Y = vertice0.GetY();
-                     point.Z = vertice0.GetZ();
-
-		 
 		
-		 fileout1 <<point.Z<<endl ;
+		typedef struct{
+			float x0,x1,x2,x3,x4,x5,x6,x7,x8,x9;		// Z simulate con un certo valore di moltep, sarà denominatore dell'efficienza
+			} vett;
+		static vett denEff;
+		
+        //definisco una struct che contiene l'informazione sulla posizione e la molteplicità del vertice
 		 
+        typedef struct{
+               float X,Y,Z;
+               int mult;} VTX;
+        static VTX point;
 		 
-		  // __________creo oggetto Multis per il Multiple Scattering____________
+        //creo i branches del tree
+        
+        tree2->Branch("VertMult",&point.X,"X/F:Y:Z:mult/I");
+        tree2->Branch("HitsPrimo",&ptrhits1);
+        tree2->Branch("HitsSecondo",&ptrhits2);
+        tree2->Branch("HitsTerzo",&ptrhits3);
+		
+		tree3->Branch("denEff",&denEff.x0, "x0:x1:x2:x3:x4:x5:x6:x7:x8:x9/F");
+                   
+        //creo gli oggetti da usare per ogni evento della simulazione         
+        
+        std::array<float,2> intersez; //array contenente le coordinate delle intersezioni
+                  
+        Vertex vertice0; //vertice
+        Multis catter; //multiple scattering
+        Traccia tr; //traccia
+        
+		//Scelta della distribuzione della molteplicità
+        TH1F* hist1;
+		 //distribuzione di molteplicita' 0->uniforme 1->kinem.root
+        
+		if(molteplicity==1){
+               TFile F("kinem.root");
+               TH1F *disteta = (TH1F*)F.Get("hm");
+               disteta->SetDirectory(0);
+               disteta->SetMinimum(0);
+               F.Close();
+               TAxis *xa=disteta->GetXaxis();
+               float step = xa->GetBinWidth(1);
+               int b1=xa->FindBin(2.6);
+               int b2=xa->FindBin(70.4821);
+ 
+               float xlow=xa->GetBinLowEdge(b1);
+               float xhig=xa->GetBinUpEdge(b2);
+               int nobins=b2-b1+1;
+               float step2 = (xhig-xlow)/nobins;
+  
+               hist1 = new TH1F("hist1","molteplicity distribution",nobins,xlow,xhig);
+               int j=1;
+			   for(int i=b1;i<=b2+1;i++)hist1->SetBinContent(j++,disteta->GetBinContent(i));
+               
+          }
 		  
-		  Multis catter;
-		 
-		 // __________calcolo intersezioni su ogni layer____________
+		 //Scelta della distribuzione di Eta
+        TH1F* hist2;
+        //distribuzione di eta 0->uniforme 1->kinem.root
+        
+		if(eta==1){
+               TFile F("kinem.root");
+               TH1F *disteta = (TH1F*)F.Get("heta2");
+               disteta->SetDirectory(0);
+               disteta->SetMinimum(0);
+               F.Close();
+               TAxis *xa=disteta->GetXaxis();
+               float step = xa->GetBinWidth(1);
+               int b1=xa->FindBin(-2.);
+               int b2=xa->FindBin(2.);
+ 
+               float xlow=xa->GetBinLowEdge(b1);
+               float xhig=xa->GetBinUpEdge(b2);
+               int nobins=b2-b1+1;
+               float step2 = (xhig-xlow)/nobins;
+  
+               hist2 = new TH1F("hist2","#eta distribution 2",nobins,xlow,xhig);
+               int j=1;
+               for(int i=b1;i<=b2+1;i++)hist2->SetBinContent(j++,disteta->GetBinContent(i));
+               
+          }
+        
+        int numSpuri = 50; //numero di eventi spuri simulati per ogni evento
+        int numParticella; // label per identificare le tracce simulate
+        int count=0;
+        
+        float u1, u2;
+        int fmax1 = 27201;
+        int fmax2 = 15344;
+        float Xt, Yt, f;
 		
-		 int i = 0;
-		 do{
+		float count3 = 0;
+		float count5 = 0;
+		float count6 = 0;
+		float count7 = 0;
+		float count8 = 0;
+		float count12 = 0;
+		float count22 = 0;
+		float count32 = 0;
+		float count42 = 0;
+		float count52 = 0;
+		float percento = 0;
+             	
+                 
+	for(int evento = 0; evento < numeroeventi; evento++){
+	     if((evento+1)%(numeroeventi/20)==0){
+			 percento = percento + 5;
+			 cout<< percento << "%" << endl; //controllo su come procede la simulazione
+		 }
 		 
-		
-			 TracciaMC tr(0.,0.,point.X,point.Y,point.Z);
+		 vertice0.NewVertex(); //estraggo nuove coordinate casuali del vertice
+		 
+		 if(molteplicity==0) vertice0.SetMoltUniform();
+		 
+		 else {//distribuzione data del file kinem.root
+        
+                //il numero di bins è 141
+                //il range va da 2.6 a 70.4821
+                //Xmax è 1 e Ymax è 27201
+         
+                do{  
+                    u1 = gRandom->Rndm();
+                    u2 = gRandom->Rndm();
+  
+                    Yt = fmax1*u2;
+                    Xt = (141*u1)/1;
+                    f = hist1->GetBinContent(Xt);}
+                while(f<=Yt);
+       
+                vertice0.SetMolt(((67.9821)*(Xt-1)/(141))+2.5);  
+         }
+		 
+		 
+		 //salvo informazioni nell'oggetto point	 
+		 point.mult = vertice0.GetMolteplicity();
+		 
+                 point.X = vertice0.GetX();
+                 point.Y = vertice0.GetY();
+                 point.Z = vertice0.GetZ();
+		       		 		 
+		 // conto quante Z ho per ogni valore di molteplicità
+		 switch(point.mult)
+		 {case 3:
+				count3++;
+				break;
+		  case 5:
+				count5++;
+				break;
+		  case 6:
+				count6++;
+				break;
+		  case 7:
+				count7++;
+		        break;
+		  case 8:
+				count8++;
+		        break;
+		  case 12:
+				count12++;
+		        break;
+		  case 22:
+				count22++;
+		        break;
+		  case 32:
+				count32++;
+		        break;
+		  case 42:
+				count42++;
+		        break;
+		  case 52:
+				count52++;
+		        break;
 			 
-			 tr.SetDistribEta(); 
-			 tr.SetDistribPhi();
-			 tr.Theta();
+		 }
+		 //calcolo intersezioni su ogni layer		
+		 numParticella = 0;		
+		 		 	
+		 do{		 		
+			 tr.SetOrigine(point.X,point.Y,point.Z); //setto come origine della traccia le coordinate del Vertice
 			 
+			 if(eta==0) tr.SetEtaUni();
+			 
+			 else {//distribuzione data del file kinem.root
+        
+                         //il numero di bins è 34
+                         //il range va da -2.04 a 2.04
+                         //Xmax è 33 e Ymax è 15344
+         
+                         do{  
+                             u1 = gRandom->Rndm();
+                             u2 = gRandom->Rndm();
+  
+                             Yt = fmax2*u2;
+                             Xt = (34*u1)/1;
+                             f = hist2->GetBinContent(Xt);}
+                         while(f<=Yt);
+       
+                         tr.SetEta(((4.08)*(Xt-1)/(34))-2.04);
+                         }
+                        
+			 //imposto la direzione iniziale della particella, estratta casualmente			 
+			 tr.SetPhi();
+			 tr.Theta();			 
 			 tr.CalcCoeff();
-			 
-			 intersez = tr.intersezione(3);
-			 if(intersez[2] < -27/2 || intersez[2] > 27/2) continue;
-			 
 			 
 			 
 			 for(int t=0; t<3; t++){
 			 
-				intersez = tr.intersezione(t+1);										
-				catter.NuoviAngoli(multipleScatt);
-				catter.VarioAngolo(tr);
-				tr.SetOrigine(intersez);
+		          intersez = tr.intersezione(t+1); //calcolo intersezione con il layer
+		          
+		        if((intersez[1] >= -27/2) && (intersez[1] <= 27/2)){									
+			    
+					catter.NuoviAngoli(multipleScatt); // estraggo nuovi angoli del multiple scattering casuali (se multipleScatt = 1)
+		            catter.VarioAngolo(tr); // conseguentemente cambiano gli angoli della direzione della particella 
+					tr.SetHit(intersez, t+1); // l'intersezione è un punto della nuova retta descritta dalla particella
 				
-				if(t==0) new(hits1[i])Punto(intersez[0],intersez[1],intersez[2]);
-				if(t==1) new(hits2[i])Punto(intersez[0],intersez[1],intersez[2]);
-				if(t==2) new(hits3[i])Punto(intersez[0],intersez[1],intersez[2]);
-				}			
-			
-			 i++;
+					Smearing ringo; //estratti gaussianamente un dZ e dPhi che si andranno a sommare alle variabili vere
+					ringo.smearZ(intersez[1]);
+					ringo.smearPhi(intersez[0], t+1);
+									
+								//inserisco le hits dentro ai branches del tree   				
+					if(t==0) new(hits1[numParticella])Punto(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+					if(t==1) new(hits2[numParticella])Punto(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+					if(t==2) new(hits3[numParticella])Punto(ringo.GetPhirec(),ringo.GetZrec(), numParticella);
+			    }
+				// se sta fuori dal rivelatore assegno label -1
+			    else{
+					if(t==0) new(hits1[numParticella])Punto(intersez[0],intersez[1], -1);
+					if(t==1) new(hits2[numParticella])Punto(intersez[0],intersez[1], -1);
+					if(t==2) new(hits3[numParticella])Punto(intersez[0],intersez[1], -1);
+			    }
+				
+			  }			
+		
+			  numParticella++;
 			 
-		 }while( i < point.mult);
+		   }while(numParticella < point.mult);
                
-               /*  // Debug
-    printf("Evento %d - moltepl: %d\n",evento,point.mult);
-    printf("x= %f ; y= %f; z= %f \n",point.X,point.Y,point.Z);
-    printf("Entries nel TClonesArray: %d\n",ptrhits1->GetEntries());
-    for (int j=0; j<hits1.GetEntries(); j++){
-      Punto *tst=(Punto*)ptrhits1->At(j);
-      cout<<"int primo layer "<<j<<") x, y, z = "<<tst->GetX()<<"; "<<tst->GetY()<<"; "<<tst->GetZ()<<endl;}*/
-    
-    // fine del debug
-		 
-		 tree->Fill();
+                 // aggiungo ora numSpuri punti spuri su ciascun layer
+		 for(int u=0; u<numSpuri; u++){
+		    new(hits2[point.mult + u])Punto(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
+		    new(hits3[point.mult + u])Punto(gRandom->Rndm()*2*TMath::Pi(),gRandom->Rndm()*27 - (27./2),-20);
+		    }
+		    
+		 tree2->Fill(); //riempie il tree
+		 	
+                 
+		 //ripristino i TClonesArrays
                  ptrhits1->Clear();
                  ptrhits2->Clear();
                  ptrhits3->Clear();
-		 }
-		
-		
-		 fileout1.close();
-		   // Save all objects in this file
-                 hfile.Write();
-
-                // Close the file. 
-                hfile.Close();
+		 }		// fine ciclo eventi
+		 
+		 hfile2.Write();              
+         hfile2.Close();
+		 
+		 denEff.x0 = count3;
+		 denEff.x1 = count5;
+		 denEff.x2 = count6;
+		 denEff.x3 = count7;
+		 denEff.x4 = count8;
+		 denEff.x5 = count12;
+		 denEff.x6 = count22;
+		 denEff.x7 = count32;
+		 denEff.x8 = count42;
+		 denEff.x9 = count52;
+		 tree3->Fill();	
+		 
+		 
+		 //salvo il tree sul file e lo chiudo
                  
-                  double TT = time.CpuTime();	
-  cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
+                 hfile3.Write();
+				 hfile3.Close();
+				 delete hist1;
+				 delete hist2;
+				 
+                 double TT = time.CpuTime();	
+                 cout<< endl <<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
 	
  }
+ 
+ 
+
+  
+  
+  
