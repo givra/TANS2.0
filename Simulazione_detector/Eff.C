@@ -100,7 +100,7 @@ void Eff(){
 	
 	numeroeventi = tree2->GetEntries(); //acquisico informazione sul numero di eventi nel mio detector
 	
-	float Zrec[numeroeventi]; //!!!!FORSE NON SERVONO
+	float Zrec[numeroeventi]; 
     float Zsim[numeroeventi];
     int conto = 0;
 	// loop sugli ingressi nel TTree
@@ -120,32 +120,26 @@ void Eff(){
 				{case 3:
 					histM3->Fill(differenza);
 					moltep[0] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 5:
 					histM5->Fill(differenza);
 					moltep[1] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 6:
 					histM6->Fill(differenza);
 					moltep[2] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 7:
 					histM7->Fill(differenza);
 					moltep[3] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 8:
 					histM8->Fill(differenza);
 					moltep[4] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 12:
 					histM12->Fill(differenza);
 					moltep[5] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 22:
 					histM22->Fill(differenza);
@@ -165,7 +159,6 @@ void Eff(){
 				 case 52:
 					histM52->Fill(differenza);
 					moltep[9] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				}
 		}
