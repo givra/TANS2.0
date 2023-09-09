@@ -9,8 +9,6 @@ ClassImp(Smearing)
 Smearing::Smearing():TRandom3(),
 	Zrec(0.),
 	Phirec(0.)
-	//Xrec(0.),
-	//Yrec(0.)
 	{
 		//////////////////////////////
 	}
