@@ -42,11 +42,6 @@ void Ricostruzione(){
 		typedef struct {
         float Z;} VTX;
 		static VTX pointRec;
-		
-		typedef struct{
-			float x0,x1,x2,x3,x4,x5,x6,x7,x8,x9;		// Z simulate con un certo valore di moltep, sarà denominatore dell'efficienza
-			} vett;
-		static vett denEff;
   
         //apertura file di input
         TFile hfile2("htree2.root");
@@ -57,10 +52,6 @@ void Ricostruzione(){
         TBranch *b2=tree2->GetBranch("HitsPrimo");
         TBranch *b3=tree2->GetBranch("HitsSecondo");
         TBranch *b4=tree2->GetBranch("HitsTerzo");
-		
-		TFile hfile3("htree3.root");
-		TTree *tree3 = (TTree*)hfile3.Get("T3");
-		TBranch *branch3 = tree3->GetBranch("denEff");
 		
 		TFile hfile4("htree4.root", "RECREATE");
 		TTree *tree4 = new TTree("T4","TTree dati efficienza");
@@ -78,7 +69,6 @@ void Ricostruzione(){
         b1->SetAddress(&point.X);
         b3->SetAddress(&hits2);
         b4->SetAddress(&hits3);
-		branch3->SetAddress(&denEff.x0);
   
         // salvo le buone combinazioni di hit nei vectors di float
         vector<float> Zgood2;
@@ -92,7 +82,6 @@ void Ricostruzione(){
 				cout<< percento << "%" << endl; //controllo su come procede la simulazione
 			}
 				
-				tree3->GetEvent(ev);
                 tree2->GetEvent(ev); 
                     
                 Zsim[ev] = point.Z; //riempio l'array coi dati simulati
@@ -185,8 +174,6 @@ void Ricostruzione(){
 		delete hist2;
 		hfile2.Close();
 				
-        hfile3.Close();
-        
 		 
 	 hist1->Draw("ep");
 	 TFile file1("zrec-ztrue-tree.root", "recreate");
