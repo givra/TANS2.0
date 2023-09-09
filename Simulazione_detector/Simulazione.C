@@ -125,7 +125,7 @@ void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false,
                
           }
         
-        int numSpuri = 50; //numero di eventi spuri simulati per ogni evento
+        int numSpuri = 0; //numero di eventi spuri simulati per ogni evento
         int numParticella; // label per identificare le tracce simulate
         int count=0;
         
@@ -154,6 +154,7 @@ void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false,
 		 }
 		 
 		 vertice0.NewVertex(); //estraggo nuove coordinate casuali del vertice
+		 numSpuri = (gRandom->Rndm()*10)/1;
 		 
 		 if(molteplicity==0) vertice0.SetMoltUniform();
 		 
