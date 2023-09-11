@@ -512,8 +512,8 @@ void Eff(){
 		TGraphErrors *graphR= new TGraphErrors(size,moltep,risol,errmoltep,errrisol);
 		graphR->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphR->SetMarkerStyle(33);
-		graphR->SetTitle("dev std vs Zsim");
-		graphR->GetXaxis()->SetTitle("Zsim[cm]");
+		graphR->SetTitle("risoluzione vs Zsim");
+		graphR->GetXaxis()->SetTitle("molteplicity[]");
 		graphR->GetYaxis()->SetTitle("dev std[]");
 		//c1->cd();
 		graphR->Draw("ap");
@@ -521,8 +521,8 @@ void Eff(){
 		TGraphErrors *graphR2= new TGraphErrors(size,binZsim,sigma2,errbinZsim,errrisol2);
 		graphR2->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphR2->SetMarkerStyle(33);
-		graphR2->SetTitle("dev std vs Ztrue");
-		graphR2->GetXaxis()->SetTitle("molteplicity[]");
+		graphR2->SetTitle("risoluzione vs Ztrue");
+		graphR2->GetXaxis()->SetTitle("Zsim[cm]");
 		graphR2->GetYaxis()->SetTitle("dev std[]");
 		//c1->cd();
 		graphR2->Draw("ap");
