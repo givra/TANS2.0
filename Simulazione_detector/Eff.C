@@ -234,7 +234,7 @@ void Eff(){
 	} 		// fine ciclo eventi
 	
 	for(int ii=0; ii<size; ii++){ eff2[ii] = effZrec[ii] / effZsim[ii];}
-	cout<<"Quante differenze > 1: "<<conto<<endl;
+	
 	
 	 // errore binomiale
 		erreff2[0] = pow((eff2[0]*(1-eff2[0])/effZsim[0]),0.5);
