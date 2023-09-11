@@ -143,17 +143,14 @@ void Eff(){
 					break;
 				 case 22:
 					histM22->Fill(differenza);
-					
 					moltep[6] = point.mult;
 					break;
 				 case 32:
 					histM32->Fill(differenza);
-					
 					moltep[7] = point.mult;
 					break;
 				 case 42:
 					histM42->Fill(differenza);
-					
 					moltep[8] = point.mult;
 					break;
 				 case 52:
