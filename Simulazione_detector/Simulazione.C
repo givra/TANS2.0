@@ -22,7 +22,7 @@
 
 using namespace std;
 
-void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false, 1 = true
+void Simulazione(bool multipleScatt=0, bool molteplicity=0, bool eta=0){ // 0 = false, 1 = true
 	
         TStopwatch time;
 
@@ -33,7 +33,7 @@ void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false,
 		TFile hfile3("htree3.root","RECREATE");			
 		TTree *tree3 = new TTree("T3","TTree dati efficienza");
         
-        int numeroeventi = 50000;
+        int numeroeventi = 10000;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto",100);
         TClonesArray &hits1 = *ptrhits1;
@@ -154,7 +154,7 @@ void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false,
 		 }
 		 
 		 vertice0.NewVertex(); //estraggo nuove coordinate casuali del vertice
-		 numSpuri = (gRandom->Rndm()*10)/1;
+		 numSpuri = (gRandom->Rndm()*3)/1;
 		 
 		 if(molteplicity==0) vertice0.SetMoltUniform();
 		 
@@ -317,11 +317,15 @@ void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false,
                  
                  hfile3.Write();
 				 hfile3.Close();
-				 delete hist1;
-				 delete hist2;
+				 if(molteplicity==1) delete hist1;
+				 if(eta==1)delete hist2;
 				 
                  double TT = time.CpuTime();	
                  cout<< endl <<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
+                 
+                 MemInfo_t memInfo;
+         gSystem->GetMemInfo(&memInfo);
+cout << "Mem Used = " << memInfo.fMemUsed << " MB"<<endl; //returning value in MB
 	
  }
  

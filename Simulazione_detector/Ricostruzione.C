@@ -17,14 +17,15 @@ void Ricostruzione(){
 	TStopwatch time;
 	
 	
-    static TH1D* hist1 = new TH1D ("histofin","Zrec-Ztrue" , 250, -0.05, 0.05);
-	static TH1D* hist2 = new TH1D ("h2","Zreconstructed versione2" , 54, -13.5, 13.5);
+     TH1D* hist1 = new TH1D ("histofin","Zrec-Ztrue" , 250, -0.05, 0.05);
+	 TH1D* hist2 = new TH1D ("h2","Zreconstructed versione2" , 54, -13.5, 13.5);
    
 	float deltaPhi;
 	
     float Z3, Z2, TanTheta;
 			
 	float q;      //termine noto retta
+	int Ymax;			
 				
 	static float R2 = 4.;
 	static float R3 = 7.;
@@ -49,7 +50,7 @@ void Ricostruzione(){
         //lettura TTree  e branch
         TTree *tree2 = (TTree*)hfile2.Get("T2");
         TBranch *b1=tree2->GetBranch("VertMult");
-        TBranch *b2=tree2->GetBranch("HitsPrimo");
+      //  TBranch *b2=tree2->GetBranch("HitsPrimo");
         TBranch *b3=tree2->GetBranch("HitsSecondo");
         TBranch *b4=tree2->GetBranch("HitsTerzo");
 		
@@ -59,7 +60,7 @@ void Ricostruzione(){
 		
         numeroeventi = tree2->GetEntries(); //acquisico informazione sul numero di eventi nel mio detector
         	
-        float Zsim[numeroeventi];	
+        //float Zsim[numeroeventi];	
 		
         //dichiarazione TClonesArray
         TClonesArray *hits2 = new TClonesArray("Punto",100);
@@ -84,7 +85,7 @@ void Ricostruzione(){
 				
                 tree2->GetEvent(ev); 
                     
-                Zsim[ev] = point.Z; //riempio l'array coi dati simulati
+               // Zsim[ev] = point.Z; //riempio l'array coi dati simulati
 
                 for(int a = 0; a < hits2->GetEntries(); a++){		// loop su hits layer 2
 			     
@@ -113,41 +114,30 @@ void Ricostruzione(){
 			
 
 	    // __________ricostruzione vertice__________
-	if(Zgood2.size() != Zgood3.size()) cout << " Zgood2 e Zgood3 hanno dimensioni diverse: " << Zgood2.size() << " " << Zgood3.size() << endl;	
+	//if(Zgood2.size() != Zgood3.size()) cout << " Zgood2 e Zgood3 hanno dimensioni diverse: " << Zgood2.size() << " " << Zgood3.size() << endl;	
 		
 		for(int e=0; e<Zgood2.size(); e++){		// ciclo sui punti buoni
 		
-				Z2 = Zgood2[e];
-			
-				Z3 = Zgood3[e];
 		
-				TanTheta = (R3-R2)/(Z3-Z2);
+				TanTheta = (R3-R2)/(Zgood3[e]-Zgood2[e]);
 		
-				q = R3 - Z3*TanTheta; //termine noto retta
-		
-				Zrec2 = -q/TanTheta;
-					
-				hist2 -> Fill(Zrec2);		// riempio l'histo con gli Zrec dati dalle coppie "buone"
+				q = R3 - Zgood3[e]*TanTheta; //termine noto retta
+											
+				hist2 -> Fill(-q/TanTheta);		// riempio l'histo con gli Zrec dati dalle coppie "buone"
 		
 			}
 			 
-	        int Ymax = 0;
-			int Xmax = 0;	
-		
-        	for(int r = 0; r < 54 ;r++){		// 54 bin decisi arbitrariamente
-        	       if(Ymax < hist2->GetBinContent(r)){
-        	                  Ymax = hist2->GetBinContent(r);
-        	                  
-        	                  Xmax = r;
-        	                  }
-        	        }
-			
+	        Ymax = hist2->GetBinContent(hist2->GetMaximumBin()); //valore del bin più alto
+					       				
         	// sotto le 2 tracce non ricostruiamo -> associamo Z=100 per poi scartare il dato
         	if(Ymax > 2){
 				//if(hist2->GetMean() < 5.3*3 && hist2->GetMean() > 5.3*3){		// controllo su 3sigma
 				pointRec.Z = hist2->GetMean();
 				tree4->Fill();
-				//}
+				
+				differenza = pointRec.Z	- point.Z;		
+			        hist1->Fill(differenza);
+				
 			}
         	else{pointRec.Z = 100.;
 				tree4->Fill();
@@ -155,16 +145,12 @@ void Ricostruzione(){
 
                
                 hist2->Reset("ICESM");
+                
                 Zgood2.clear();
-				Zgood3.clear();
-				
-			if(pointRec.Z != 100.){		
-			differenza = pointRec.Z	- Zsim[ev];		
-			hist1->Fill(differenza);
-			}
-		
-                 hits2->Clear();
-                 hits3->Clear();
+		Zgood3.clear();
+									
+                hits2->Clear();
+                hits3->Clear();
 				 
 				 
 		}		// fine ciclo eventi
@@ -175,17 +161,20 @@ void Ricostruzione(){
 		hfile2.Close();
 				
 		 
-	 hist1->Draw("ep");
+	 //hist1->Draw("ep");
 	 TFile file1("zrec-ztrue-tree.root", "recreate");
 	 hist1->Write();
-	 file1.Close();
-	 //delete hist1;
+	
+	 delete hist1;
+	 
 	
 	 hfile4.Write();              
      hfile4.Close();
 				
          double TT = time.CpuTime();			
          cout<< endl <<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;
-  
+         
+         MemInfo_t memInfo;
+         gSystem->GetMemInfo(&memInfo);
+cout << "Mem Used = " << memInfo.fMemUsed << " MB"<<endl; //returning value in MB
          }
- 

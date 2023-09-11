@@ -37,8 +37,8 @@ void Eff(){
 	float errrisol[size] = {0,0,0,0,0,0,0,0,0,0};
 	float risol2[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le risoluzioni in funz di ztrue
 	float errrisol2[size] = {0,0,0,0,0,0,0,0,0,0};
-	float binZsim[size] = {-17.5,-12.5,-7.5,-3.75,-1.25,1.25,3.75,7.5,12.5,17.5};
-        float errbinZsim[size] = {2.5,2.5,2.5,1.25,1.25,1.25,1.25,2.5,2.5,2.5};
+	float binZsim[size] = {-13,-9.5,-6.5,-3.75,-1.25,1.25,3.75,6.5,9.5,13};
+        float errbinZsim[size] = {2,1.5,1.5,1.25,1.25,1.25,1.25,1.5,1.5,2};
         float effZsim[size] = {0,0,0,0,0,0,0,0,0,0};
         float effZrec[size] = {0,0,0,0,0,0,0,0,0,0};
         float sigma2[size] = {0,0,0,0,0,0,0,0,0,0};
@@ -56,16 +56,16 @@ void Eff(){
 	static TH1D* histM42 = new TH1D("hM42","41.5 < molteplicità < 42.5", 50, -0.04, 0.04);
 	static TH1D* histM52 = new TH1D("hM52","51.5 < molteplicità < 52.5", 50, -0.04, 0.04);
 	
-	static TH1D* histR0 = new TH1D("hR0","-20 < Ztrue < -15", 10, -0.05, 0.05);
-	static TH1D* histR1 = new TH1D("hR1","-15 < Ztrue < -10", 50, -0.05, 0.05);
-	static TH1D* histR2 = new TH1D("hR2","-10 < Ztrue < -5", 50, -0.05, 0.05);
+	static TH1D* histR0 = new TH1D("hR0","-15 < Ztrue < -11", 50, -0.05, 0.05);
+	static TH1D* histR1 = new TH1D("hR1","-11 < Ztrue < -8", 50, -0.05, 0.05);
+	static TH1D* histR2 = new TH1D("hR2","-8 < Ztrue < -5", 50, -0.05, 0.05);
 	static TH1D* histR3 = new TH1D("hR3","-5 < Ztrue < -2.5", 50, -0.05, 0.05);
 	static TH1D* histR4 = new TH1D("hR4","-2.5 < Ztrue < -0", 50, -0.05, 0.05);
 	static TH1D* histR5 = new TH1D("hR5","0 < Ztrue < 2.5", 50, -0.05, 0.05);
 	static TH1D* histR6 = new TH1D("hR6","2.5 < Ztrue < 5", 50, -0.04, 0.04);
-	static TH1D* histR7 = new TH1D("hR7","5 < Ztrue < 10", 50, -0.04, 0.04);
-	static TH1D* histR8 = new TH1D("hR8","10 < Ztrue < 15", 50, -0.04, 0.04);
-	static TH1D* histR9 = new TH1D("hR9","15 < Ztrue < 20", 20, -0.04, 0.04);
+	static TH1D* histR7 = new TH1D("hR7","5 < Ztrue < 8", 50, -0.04, 0.04);
+	static TH1D* histR8 = new TH1D("hR8","8 < Ztrue < 11", 50, -0.04, 0.04);
+	static TH1D* histR9 = new TH1D("hR9","11 < Ztrue < 15", 50, -0.04, 0.04);
 	
 	
 	typedef struct {
@@ -100,7 +100,7 @@ void Eff(){
 	
 	numeroeventi = tree2->GetEntries(); //acquisico informazione sul numero di eventi nel mio detector
 	
-	float Zrec[numeroeventi]; 
+	float Zrec[numeroeventi]; //!!!!FORSE NON SERVONO
     float Zsim[numeroeventi];
     int conto = 0;
 	// loop sugli ingressi nel TTree
@@ -120,57 +120,67 @@ void Eff(){
 				{case 3:
 					histM3->Fill(differenza);
 					moltep[0] = point.mult;
+					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 5:
 					histM5->Fill(differenza);
 					moltep[1] = point.mult;
+					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 6:
 					histM6->Fill(differenza);
 					moltep[2] = point.mult;
+					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 7:
 					histM7->Fill(differenza);
 					moltep[3] = point.mult;
+					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 8:
 					histM8->Fill(differenza);
 					moltep[4] = point.mult;
+					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 12:
 					histM12->Fill(differenza);
 					moltep[5] = point.mult;
+					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				 case 22:
 					histM22->Fill(differenza);
+					
 					moltep[6] = point.mult;
 					break;
 				 case 32:
 					histM32->Fill(differenza);
+					
 					moltep[7] = point.mult;
 					break;
 				 case 42:
 					histM42->Fill(differenza);
+					
 					moltep[8] = point.mult;
 					break;
 				 case 52:
 					histM52->Fill(differenza);
 					moltep[9] = point.mult;
+					//cout << " moltep " << point.mult << " diff " << differenza << endl;
 					break;
 				}
 		}
 		
-		if((point.Z>=-20.)&&(point.Z<=-15.)){
+		if((point.Z>=-15.)&&(point.Z<=-11.)){
 			effZsim[0]++; 
 			histR0->Fill(differenza);
 		}
 		                                     
-		if((point.Z>-15.)&&(point.Z<=-10.)){
+		if((point.Z>-11.)&&(point.Z<=-8.)){
 			effZsim[1]++; 
 			histR1->Fill(differenza);
 		}
 		                                    
-		if((point.Z>-10.)&&(point.Z<=-5.)){
+		if((point.Z>-8.)&&(point.Z<=-5.)){
 			effZsim[2]++; 
 			histR2->Fill(differenza);
 		}
@@ -195,28 +205,28 @@ void Eff(){
 			histR6->Fill(differenza);
 		}
 		                                     
-		if((point.Z>5.)&&(point.Z<=10.)){
+		if((point.Z>5.)&&(point.Z<=8.)){
 			effZsim[7]++; 
 			histR7->Fill(differenza);
 		}
 		                                     
-		if((point.Z>10.)&&(point.Z<=15.)){
+		if((point.Z>8.)&&(point.Z<=11.)){
 			effZsim[8]++; 
 			histR8->Fill(differenza);
 		}
 		                                   
-		if((point.Z>15.)&&(point.Z<=20.)){
+		if((point.Z>11.)&&(point.Z<=15.)){
 			effZsim[9]++; 
 			histR9->Fill(differenza);
 		}
 		
 		
 		
-		if((pointRec.Z>=-20.)&&(pointRec.Z<=-15.))effZrec[0]++; 
+		if((pointRec.Z>=-15.)&&(pointRec.Z<=-11.))effZrec[0]++; 
 		                                     
-		if((pointRec.Z>-15.)&&(pointRec.Z<=-10.))effZrec[1]++; 
+		if((pointRec.Z>-11.)&&(pointRec.Z<=-8.))effZrec[1]++; 
 		                                    
-		if((pointRec.Z>-10.)&&(pointRec.Z<=-5.))effZrec[2]++; 
+		if((pointRec.Z>-8.)&&(pointRec.Z<=-5.))effZrec[2]++; 
 		                                    
 		if((pointRec.Z>-5.)&&(pointRec.Z<=-2.5))effZrec[3]++; 
 		                                    
@@ -226,15 +236,15 @@ void Eff(){
 		                                     
 		if((pointRec.Z>2.5)&&(pointRec.Z<=5.))effZrec[6]++; 
 		                                     
-		if((pointRec.Z>5.)&&(pointRec.Z<=10.))effZrec[7]++; 
+		if((pointRec.Z>5.)&&(pointRec.Z<=8.))effZrec[7]++; 
 		                                     
-		if((pointRec.Z>10.)&&(pointRec.Z<=15.))effZrec[8]++; 
+		if((pointRec.Z>8.)&&(pointRec.Z<=11.))effZrec[8]++; 
 		                                   
-		if((pointRec.Z>15.)&&(pointRec.Z<=20.))effZrec[9]++; 
+		if((pointRec.Z>11.)&&(pointRec.Z<=15.))effZrec[9]++; 
 	} 		// fine ciclo eventi
 	
 	for(int ii=0; ii<size; ii++){ eff2[ii] = effZrec[ii] / effZsim[ii];}
-	
+	cout<<"Quante differenze > 1: "<<conto<<endl;
 	
 	 // errore binomiale
 		erreff2[0] = pow((eff2[0]*(1-eff2[0])/effZsim[0]),0.5);
@@ -377,7 +387,7 @@ void Eff(){
 //______________________________ fit gaussiani risoluzione vs zsim____________________________
 	
 	cout << "******************* fit gaus risoluzione vs zsim ********************************" << endl;
-		TF1 *fR0 = new TF1("fR0","gaus",-0.07,0.07);
+		TF1 *fR0 = new TF1("fR0","gaus",-0.03,0.03);
 		fR0->SetLineColor(kRed);
 		histR0->Fit(fR0,"NR+");
 		gStyle->SetOptFit(0);
@@ -476,7 +486,7 @@ void Eff(){
 		sigma2[8] = sigmaR8;
 		errrisol2[8] = errsigmaR8;
 		
-		TF1 *fR9 = new TF1("fR9","gaus",-0.01,0.01);
+		TF1 *fR9 = new TF1("fR9","gaus",-0.03,0.03);
 		fR9->SetLineColor(kRed);
 		histR9->Fit(fR9,"NR+");
 		gStyle->SetOptFit(0);
@@ -493,39 +503,39 @@ void Eff(){
 		TGraphErrors *graphE= new TGraphErrors(size,moltep,eff,errmoltep,erreff);
 		graphE->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphE->SetMarkerStyle(33);
-		graphE->SetTitle("Efficiency vs molteplicity");
-		graphE->GetXaxis()->SetTitle("molteplicity[]");
-		graphE->GetYaxis()->SetTitle("efficiency[]");
+		graphE->SetTitle("Efficiency Vs Molteplicity");
+		graphE->GetXaxis()->SetTitle("Molteplicity[]");
+		graphE->GetYaxis()->SetTitle("Efficiency[]");
 		
-		graphE->Draw("ap");
+		//graphE->Draw("ap");
 // __________________________________________ efficienza vs Ztrue _________________________________________		
 		//TCanvas *c1=new TCanvas("c1","c1",800,600);
 		TGraphErrors *graphE2= new TGraphErrors(size,binZsim,eff2,errbinZsim,erreff2);
 		graphE2->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphE2->SetMarkerStyle(33);
-		graphE2->SetTitle("Efficiency vs Zsim");
-		graphE2->GetXaxis()->SetTitle("Zsim[cm]");
-		graphE2->GetYaxis()->SetTitle("efficiency[]");
+		graphE2->SetTitle("Efficiency Vs Ztrue");
+		graphE2->GetXaxis()->SetTitle("Ztrue[cm]");
+		graphE2->GetYaxis()->SetTitle("Efficiency[]");
 		//c1->cd();
-		graphE2->Draw("ap");
+		//graphE2->Draw("ap");
 // ____________________________________________ risoluzione vs moltep ________________________________________		
 		TGraphErrors *graphR= new TGraphErrors(size,moltep,risol,errmoltep,errrisol);
 		graphR->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphR->SetMarkerStyle(33);
-		graphR->SetTitle("risoluzione vs Zsim");
-		graphR->GetXaxis()->SetTitle("molteplicity[]");
-		graphR->GetYaxis()->SetTitle("dev std[]");
+		graphR->SetTitle("Resolution Vs Molteplicity");
+		graphR->GetXaxis()->SetTitle("Molteplicity[]");
+		graphR->GetYaxis()->SetTitle("Resolution[cm]");
 		//c1->cd();
-		graphR->Draw("ap");
+		//graphR->Draw("ap");
 // ____________________________________________ risoluzione vs Ztrue ________________________________________		
 		TGraphErrors *graphR2= new TGraphErrors(size,binZsim,sigma2,errbinZsim,errrisol2);
 		graphR2->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphR2->SetMarkerStyle(33);
-		graphR2->SetTitle("risoluzione vs Ztrue");
-		graphR2->GetXaxis()->SetTitle("Zsim[cm]");
-		graphR2->GetYaxis()->SetTitle("dev std[]");
+		graphR2->SetTitle("Resolution Vs Ztrue");
+		graphR2->GetXaxis()->SetTitle("Ztrue[cm]");
+		graphR2->GetYaxis()->SetTitle("Resolution[cm]");
 		//c1->cd();
-		graphR2->Draw("ap");
+		//graphR2->Draw("ap");
 		
 		
 		
