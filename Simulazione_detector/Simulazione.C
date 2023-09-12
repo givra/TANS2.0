@@ -30,7 +30,7 @@ void Simulazione(bool multipleScatt, bool molteplicity, bool eta){ // 0 = false,
 		TFile hfile("htree.root","RECREATE");	
         TTree *tree = new TTree("T","TTree dati simulati");
         
-        int numeroeventi = 10000;
+        int numeroeventi = 1000000;
         
         TClonesArray *ptrhits1 = new TClonesArray("Punto",100);
         TClonesArray &hits1 = *ptrhits1;
