@@ -474,7 +474,7 @@ void Eff(){
 		sigma2[8] = sigmaR8;
 		errrisol2[8] = errsigmaR8;
 		
-		TF1 *fR9 = new TF1("fR9","gaus",-0.01,0.01);
+		TF1 *fR9 = new TF1("fR9","gaus",-0.07,0.07);
 		fR9->SetLineColor(kRed);
 		histR9->Fit(fR9,"NR+");
 		gStyle->SetOptFit(0);
