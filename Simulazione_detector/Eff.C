@@ -24,27 +24,37 @@ void Eff(){
 	
 	TStopwatch time;	
 	 
-    int numeroeventi;
+        int numeroeventi;
 	  
 	const int size = 10; 			// dimensione array per TGraph  
-	float moltep[size] = {0,0,0,0,0,0,0,0,0,0}; 		// array contenente le moltep di ogni evento da passare al TGraph
+	
+	float count[size] = {0,0,0,0,0,0,0,0,0,0};  //conta quante Zsim con un certo valore di molteplicità ci sono
+	
+	float moltep[size] = {0,0,0,0,0,0,0,0,0,0}; // array contenente le moltep di ogni evento da passare al TGraph
 	float errmoltep[size] = {0,0,0,0,0,0,0,0,0,0};	// binomiale
+	
 	float eff[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le efficienze in funz di moltep
 	float erreff[size] = {0,0,0,0,0,0,0,0,0,0};
+	
 	float eff2[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le efficienze in funz di ztrue
 	float erreff2[size] = {0,0,0,0,0,0,0,0,0,0};
+	
 	float risol[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le risoluzioni in funz di moltep
 	float errrisol[size] = {0,0,0,0,0,0,0,0,0,0};
-	float risol2[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le risoluzioni in funz di ztrue
+	
+	float risol2[size] = {0,0,0,0,0,0,0,0,0,0};
+	float sigma2[size] = {0,0,0,0,0,0,0,0,0,0};			// array contenente le risoluzioni in funz di ztrue
 	float errrisol2[size] = {0,0,0,0,0,0,0,0,0,0};
-	float binZsim[size] = {-13,-9.5,-6.5,-3.75,-1.25,1.25,3.75,6.5,9.5,13};
+	
+	float binZsim[size] = {-13,-9.5,-6.5,-3.75,-1.25,1.25,3.75,6.5,9.5,13}; //valori bin Zsim
         float errbinZsim[size] = {2,1.5,1.5,1.25,1.25,1.25,1.25,1.5,1.5,2};
-        float effZsim[size] = {0,0,0,0,0,0,0,0,0,0};
-        float effZrec[size] = {0,0,0,0,0,0,0,0,0,0};
-        float sigma2[size] = {0,0,0,0,0,0,0,0,0,0};
+        
+        float effZsim[size] = {0,0,0,0,0,0,0,0,0,0};  //denominatore per il calcolo di eff2
+        float effZrec[size] = {0,0,0,0,0,0,0,0,0,0};  //denominatore per il calcolo di eff2
+               
 	float differenza = 0;
 	
-	// histo per efficienza
+	// histo per risoluzione
 	static TH1D* histM3 = new TH1D("hM3","2.5 < molteplicità < 3.5", 15, -0.05, 0.05);// fatto per molteplicità 3
 	static TH1D* histM5 = new TH1D("hM5","4.5 < molteplicità < 5.5", 25, -0.05, 0.05);
 	static TH1D* histM6 = new TH1D("hM6","5.5 < molteplicità < 6.5", 25, -0.05, 0.05);
@@ -71,101 +81,112 @@ void Eff(){
 	typedef struct {
            float X,Y,Z;
            int mult;} VTX1;
-    static VTX1 point;
+        static VTX1 point;
 	
 	typedef struct {
            float Z;} VTX;
 	static VTX pointRec;
-	
-	
-	typedef struct{
-			float x0,x1,x2,x3,x4,x5,x6,x7,x8,x9;		// Z simulate con un certo valore di moltep, sarà denominatore dell'efficienza
-			} vett;
-		static vett denEff;
+			
 		
 	TFile hfile2("htree2.root");
 	TTree *tree2 = (TTree*)hfile2.Get("T2");
-    TBranch *b1=tree2->GetBranch("VertMult");
+        TBranch *b1=tree2->GetBranch("VertMult");
 	b1->SetAddress(&point.X);
 		
-	TFile hfile3("htree3.root");
-	TTree *tree3 = (TTree*)hfile3.Get("T3");
-	TBranch *branch3 = tree3->GetBranch("denEff");
-    branch3->SetAddress(&denEff.x0);
-	
 	TFile hfile4("htree4.root");
 	TTree *tree4 = (TTree*)hfile4.Get("T4");
 	TBranch *branch4 = tree4->GetBranch("Zrec");
-    branch4->SetAddress(&pointRec.Z);
+        branch4->SetAddress(&pointRec.Z);
 	
 	numeroeventi = tree2->GetEntries(); //acquisico informazione sul numero di eventi nel mio detector
-	
-	float Zrec[numeroeventi]; //!!!!FORSE NON SERVONO
-    float Zsim[numeroeventi];
-    int conto = 0;
+	   
+      		
 	// loop sugli ingressi nel TTree
-    for(int ev=0;ev<numeroeventi;ev++){
-                
-		tree3->GetEvent(ev);
-        tree2->GetEvent(ev);
+        for(int ev=0;ev<numeroeventi;ev++){
+                		
+                tree2->GetEvent(ev);
 		tree4->GetEvent(ev);
+			
 		
-		Zsim[ev] = point.Z; 
-		
-		
+		switch(point.mult)
+		 {case 3:
+				count[0]++;
+				break;
+		  case 5:
+				count[1]++;
+				break;
+		  case 6:
+				count[2]++;
+				break;
+		  case 7:
+				count[3]++;
+		        break;
+		  case 8:
+				count[4]++;
+		        break;
+		  case 12:
+				count[5]++;
+		        break;
+		  case 22:
+				count[6]++;
+		        break;
+		  case 32:
+				count[7]++;
+		        break;
+		  case 42:
+				count[8]++;
+		        break;
+		  case 52:
+				count[9]++;
+		        break;
+			 
+		 }
+		 
 		if(pointRec.Z != 100.){	
-			differenza = pointRec.Z	- Zsim[ev];
-			if(differenza>1) conto++;
+			differenza = pointRec.Z	- point.Z;
+			
 			switch(point.mult)
 				{case 3:
 					histM3->Fill(differenza);
 					moltep[0] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
+					
 					break;
 				 case 5:
 					histM5->Fill(differenza);
 					moltep[1] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
+					
 					break;
 				 case 6:
 					histM6->Fill(differenza);
-					moltep[2] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
+					moltep[2] = point.mult;					
 					break;
 				 case 7:
 					histM7->Fill(differenza);
-					moltep[3] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
+					moltep[3] = point.mult;					
 					break;
 				 case 8:
 					histM8->Fill(differenza);
-					moltep[4] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
+					moltep[4] = point.mult;					
 					break;
 				 case 12:
 					histM12->Fill(differenza);
-					moltep[5] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
+					moltep[5] = point.mult;					
 					break;
 				 case 22:
-					histM22->Fill(differenza);
-					
+					histM22->Fill(differenza);					
 					moltep[6] = point.mult;
 					break;
 				 case 32:
-					histM32->Fill(differenza);
-					
+					histM32->Fill(differenza);					
 					moltep[7] = point.mult;
 					break;
 				 case 42:
-					histM42->Fill(differenza);
-					
+					histM42->Fill(differenza);				
 					moltep[8] = point.mult;
 					break;
 				 case 52:
 					histM52->Fill(differenza);
-					moltep[9] = point.mult;
-					//cout << " moltep " << point.mult << " diff " << differenza << endl;
+					moltep[9] = point.mult;					
 					break;
 				}
 		}
@@ -243,8 +264,8 @@ void Eff(){
 		if((pointRec.Z>11.)&&(pointRec.Z<=15.))effZrec[9]++; 
 	} 		// fine ciclo eventi
 	
-	for(int ii=0; ii<size; ii++){ eff2[ii] = effZrec[ii] / effZsim[ii];}
-	cout<<"Quante differenze > 1: "<<conto<<endl;
+	for(int ii=0; ii<size; ii++){eff2[ii] = effZrec[ii] / effZsim[ii];} //calcolo eff2
+	
 	
 	 // errore binomiale
 		erreff2[0] = pow((eff2[0]*(1-eff2[0])/effZsim[0]),0.5);
@@ -261,28 +282,31 @@ void Eff(){
 	// # di Z ricostruite con una certa moltep su quelle simulate
 	
 	
-		eff[0] = histM3->GetEntries()/denEff.x0;		
-		eff[1] = histM5->GetEntries()/denEff.x1;
-		eff[2] = histM6->GetEntries()/denEff.x2;
-		eff[3] = histM7->GetEntries()/denEff.x3;
-		eff[4] = histM8->GetEntries()/denEff.x4;
-		eff[5] = histM12->GetEntries()/denEff.x5;
-		eff[6] = histM22->GetEntries()/denEff.x6;
-		eff[7] = histM32->GetEntries()/denEff.x7;
-		eff[8] = histM42->GetEntries()/denEff.x8;
-		eff[9] = histM52->GetEntries()/denEff.x9;
+		
+		eff[0] = histM3->GetEntries()/count[0];		
+		eff[1] = histM5->GetEntries()/count[1];
+		eff[2] = histM6->GetEntries()/count[2];
+		eff[3] = histM7->GetEntries()/count[3];
+		eff[4] = histM8->GetEntries()/count[4];
+		eff[5] = histM12->GetEntries()/count[5];
+		eff[6] = histM22->GetEntries()/count[6];
+		eff[7] = histM32->GetEntries()/count[7];
+		eff[8] = histM42->GetEntries()/count[8];
+		eff[9] = histM52->GetEntries()/count[9];
 		
 		// errore binomiale
-		erreff[0] = pow((eff[0]*(1-eff[0])/denEff.x0),0.5);
-		erreff[1] = pow((eff[1]*(1-eff[1])/denEff.x1),0.5);
-		erreff[2] = pow((eff[2]*(1-eff[2])/denEff.x2),0.5);
-		erreff[3] = pow((eff[3]*(1-eff[3])/denEff.x3),0.5);
-		erreff[4] = pow((eff[4]*(1-eff[4])/denEff.x4),0.5);
-		erreff[5] = pow((eff[5]*(1-eff[5])/denEff.x5),0.5);
-		erreff[6] = pow((eff[6]*(1-eff[6])/denEff.x6),0.5);
-		erreff[7] = pow((eff[7]*(1-eff[7])/denEff.x7),0.5);
-		erreff[8] = pow((eff[8]*(1-eff[8])/denEff.x8),0.5);
-		erreff[9] = pow((eff[9]*(1-eff[9])/denEff.x9),0.5);
+	
+		
+		erreff[0] = pow((eff[0]*(1-eff[0])/count[0]),0.5);
+		erreff[1] = pow((eff[1]*(1-eff[1])/count[1]),0.5);
+		erreff[2] = pow((eff[2]*(1-eff[2])/count[2]),0.5);
+		erreff[3] = pow((eff[3]*(1-eff[3])/count[3]),0.5);
+		erreff[4] = pow((eff[4]*(1-eff[4])/count[4]),0.5);
+		erreff[5] = pow((eff[5]*(1-eff[5])/count[5]),0.5);
+		erreff[6] = pow((eff[6]*(1-eff[6])/count[6]),0.5);
+		erreff[7] = pow((eff[7]*(1-eff[7])/count[7]),0.5);
+		erreff[8] = pow((eff[8]*(1-eff[8])/count[8]),0.5);
+		erreff[9] = pow((eff[9]*(1-eff[9])/count[9]),0.5);
 		
 		
 		// rad(N) per moltep
@@ -499,7 +523,7 @@ void Eff(){
 		
 		
 // __________________________________________ efficienza vs moltep _________________________________________
-		//TCanvas *c1=new TCanvas("c1","c1",800,600);
+		
 		TGraphErrors *graphE= new TGraphErrors(size,moltep,eff,errmoltep,erreff);
 		graphE->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphE->SetMarkerStyle(33);
@@ -507,17 +531,16 @@ void Eff(){
 		graphE->GetXaxis()->SetTitle("Molteplicity[]");
 		graphE->GetYaxis()->SetTitle("Efficiency[]");
 		
-		//graphE->Draw("ap");
+		
 // __________________________________________ efficienza vs Ztrue _________________________________________		
-		//TCanvas *c1=new TCanvas("c1","c1",800,600);
+		
 		TGraphErrors *graphE2= new TGraphErrors(size,binZsim,eff2,errbinZsim,erreff2);
 		graphE2->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
 		graphE2->SetMarkerStyle(33);
 		graphE2->SetTitle("Efficiency Vs Ztrue");
 		graphE2->GetXaxis()->SetTitle("Ztrue[cm]");
 		graphE2->GetYaxis()->SetTitle("Efficiency[]");
-		//c1->cd();
-		//graphE2->Draw("ap");
+		
 // ____________________________________________ risoluzione vs moltep ________________________________________		
 		TGraphErrors *graphR= new TGraphErrors(size,moltep,risol,errmoltep,errrisol);
 		graphR->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
@@ -525,8 +548,7 @@ void Eff(){
 		graphR->SetTitle("Resolution Vs Molteplicity");
 		graphR->GetXaxis()->SetTitle("Molteplicity[]");
 		graphR->GetYaxis()->SetTitle("Resolution[cm]");
-		//c1->cd();
-		//graphR->Draw("ap");
+		
 // ____________________________________________ risoluzione vs Ztrue ________________________________________		
 		TGraphErrors *graphR2= new TGraphErrors(size,binZsim,sigma2,errbinZsim,errrisol2);
 		graphR2->SetMarkerSize(1);//https://root.cern.ch/doc/master/classTAttMarker.html
@@ -534,22 +556,21 @@ void Eff(){
 		graphR2->SetTitle("Resolution Vs Ztrue");
 		graphR2->GetXaxis()->SetTitle("Ztrue[cm]");
 		graphR2->GetYaxis()->SetTitle("Resolution[cm]");
-		//c1->cd();
-		//graphR2->Draw("ap");
+		
 		
 		
 		
 		TFile file1("efficienza.root", "recreate");
 		histM3->Write(); 
-	    histM5->Write(); 
-        histM6->Write(); 
-        histM7->Write(); 
-        histM8->Write(); 
-        histM12->Write();
-        histM22->Write();
-        histM32->Write();
-        histM42->Write();
-        histM52->Write();
+	        histM5->Write(); 
+                histM6->Write(); 
+                histM7->Write(); 
+                histM8->Write(); 
+                histM12->Write();
+                histM22->Write();
+                histM32->Write();
+                histM42->Write();
+                histM52->Write();
 		histR0->Write();
 		histR1->Write();
 		histR2->Write();
@@ -560,22 +581,22 @@ void Eff(){
 		histR7->Write();
 		histR8->Write();
 		histR9->Write();
-        graphE->Write();
+                graphE->Write();
 		graphE2->Write();
 		graphR->Write();
 		graphR2->Write();
-        file1.Close();
+                file1.Close();
 		
-        delete histM3;
-        delete histM5;
-        delete histM6;
-        delete histM7;
-        delete histM8;
-        delete histM12;
-        delete histM22;
-        delete histM32;
-        delete histM42;
-        delete histM52;
+                delete histM3;
+                delete histM5;
+                delete histM6;
+                delete histM7;
+                delete histM8;
+                delete histM12;
+                delete histM22;
+                delete histM32;
+                delete histM42;
+                delete histM52;
 		delete histR0;
 		delete histR1;
 		delete histR2;
@@ -595,13 +616,15 @@ void Eff(){
         graphR = nullptr;
 		delete graphR2;
         graphR2 = nullptr;
+	
+	hfile2.Close();
+	hfile4.Close();	
 		
-		
-		double TT = time.CpuTime();	
+	double TT = time.CpuTime();	
          cout<<"Il tempo impiegato dalla CPU è "<<TT<<" s"<<endl;  
          
          MemInfo_t memInfo;
          gSystem->GetMemInfo(&memInfo);
-cout << "Mem Used = " << memInfo.fMemUsed << " MB"<<endl; //returning value in MB
+         cout << "Mem Used = " << memInfo.fMemUsed << " MB"<<endl; //returning value in MB
 		
 }
