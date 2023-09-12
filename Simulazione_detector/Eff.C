@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
-#include <vector>
 
 #include "TFile.h"
 #include "TTree.h"
@@ -11,12 +10,6 @@
 #include "TRandom3.h"
 #include "TH1F.h"
 #include "TAxis.h"
-
-#include "Punto.h"
-#include "Vertex.h"
-#include "Traccia.h"
-#include "Multis.h"
-#include "Smearing.h"
 
 using namespace std;
 
@@ -274,16 +267,16 @@ void Eff(){
 	// # di Z ricostruite con una certa moltep su quelle simulate
 	
 	
-		eff[0] = histM3->GetEntries()count[0];			
-		eff[1] = histM5->GetEntries()count[1];	
-		eff[2] = histM6->GetEntries()count[2];	
-		eff[3] = histM7->GetEntries()count[3];	
-		eff[4] = histM8->GetEntries()count[4];	
-		eff[5] = histM12->GetEntries()count[5];	
-		eff[6] = histM22->GetEntries()count[6];	
-		eff[7] = histM32->GetEntries()count[7];	
-		eff[8] = histM42->GetEntries()count[8];	
-		eff[9] = histM52->GetEntries()count[9];	
+		eff[0] = histM3->GetEntries()/count[0];			
+		eff[1] = histM5->GetEntries()/count[1];	
+		eff[2] = histM6->GetEntries()/count[2];	
+		eff[3] = histM7->GetEntries()/count[3];	
+		eff[4] = histM8->GetEntries()/count[4];	
+		eff[5] = histM12->GetEntries()/count[5];	
+		eff[6] = histM22->GetEntries()/count[6];	
+		eff[7] = histM32->GetEntries()/count[7];	
+		eff[8] = histM42->GetEntries()/count[8];	
+		eff[9] = histM52->GetEntries()/count[9];	
 		
 		// errore binomiale
 		erreff[0] = pow((eff[0]*(1-eff[0])/count[0]),0.5);
